@@ -5,7 +5,7 @@ using UnityEngine;
 public class Chunk : MonoBehaviour
 {
 	public Vector3i position = new Vector3i(0, 0, 0);
-	public int size = 16;
+	public int size = 4;
 	public float noiseSize = 30.0f;
 	public float biomeHeight = 10f;
 	public Block[,,] blocks;

@@ -15,11 +15,18 @@ public class Vector3i
 		this.z = z;
 	}
 
+	public Vector3i() : this (0, 0, 0) {}
+
 	public void set(int x, int y, int z)
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public void set(Vector3i v)
+	{
+		set (v.x, v.y, v.z);
 	}
 
 	public Vector3 add(Vector3 v)
@@ -30,5 +37,24 @@ public class Vector3i
 	public Vector3i add(Vector3i v)
 	{
 		return new Vector3i(v.x + this.x, v.y + this.y, v.z + this.z);
+	}
+
+	public override bool Equals(object obj)
+	{
+		Vector3i vector3i = (Vector3i)obj;
+		return vector3i.x == this.x && vector3i.y == this.y && vector3i.z == this.z;
+	}
+
+	public override int GetHashCode()
+	{
+		int result = 17;
+
+		const int MULTIPLIER = 31;
+
+		result = MULTIPLIER * result + this.x;
+		result = MULTIPLIER * result + this.y;
+		result = MULTIPLIER * result + this.z;
+
+		return result;
 	}
 }

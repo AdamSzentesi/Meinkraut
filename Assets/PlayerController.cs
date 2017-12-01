@@ -5,26 +5,107 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 	public float translationSpeed;
-	public float rotationSpeed;
+	public float angularVelocity;
+	public float jumpForce;
+	public LayerMask ground;
 
-	// Use this for initialization
-	void Start () {
-		
+	private Quaternion targetRotation;
+	private Vector3 targetVelocity;
+
+	private float moveInput = 0;
+	private float turnInput = 0;
+	private float jumpInput = 0;
+	private Vector3 gravity = Physics.gravity;
+
+	private Transform transform;
+	private Rigidbody rigidBody;
+	private CapsuleCollider collider;
+
+	void Start()
+	{
+		this.transform = GetComponent<Transform>();
+		this.rigidBody = GetComponent<Rigidbody>();
+		this.collider = GetComponent<CapsuleCollider>();
+		this.targetRotation = this.transform.rotation;
+		this.targetVelocity = new Vector3();
 	}
 	
-	// Update is called once per frame
-	void Update ()
+	void Update()
 	{
-		Vector3 translation = new Vector3 ();
-		float inputVertical = Input.GetAxis("Vertical");
-		translation.z = inputVertical * Time.deltaTime * this.translationSpeed;
-
-		Vector3 rotation = new Vector3 ();
-		float inputMouseX = Input.GetAxis("Mouse X");
-		rotation.y = inputMouseX * Time.deltaTime * this.rotationSpeed;
-
-		Transform transform = GetComponent<Transform>();
-		transform.Translate(translation);
-		transform.Rotate(transform.up, rotation.y);
+		this.moveInput = Input.GetAxis("Vertical");
+		this.turnInput = Input.GetAxis("Mouse X");
+		this.jumpInput = Input.GetAxis("Jump");
+		turn();
 	}
+
+	void FixedUpdate()
+	{
+		walk();
+		jump();
+
+		this.rigidBody.velocity = this.rigidBody.transform.TransformDirection(this.targetVelocity);
+	}
+
+	void turn()
+	{
+		this.targetRotation *= Quaternion.AngleAxis (turnInput * Time.deltaTime * this.angularVelocity, Vector3.up);
+		transform.rotation = this.targetRotation;
+	}
+
+	void walk()
+	{
+		if (this.moveInput != 0)
+		{
+			this.targetVelocity.z = moveInput * this.translationSpeed;
+		}
+		else
+		{
+			this.targetVelocity.z = 0;
+		}
+	}
+
+	private void jump()
+	{
+		if (isGrounded())
+		{
+			print ("GR");
+			if (this.jumpInput > 0)
+			{
+				//jump
+				this.targetVelocity.y = this.jumpForce;
+			}
+			else
+			{
+				//added vel = 0
+				this.targetVelocity.y = 0;
+			}
+		}
+		else
+		{
+			//fall
+			this.targetVelocity.y += this.gravity.y * Time.deltaTime;
+		}
+	}
+
+	private bool isGrounded()
+	{
+		return Physics.Raycast(this.transform.position, Vector3.down, 1.1f, this.ground);
+//		return Physics.CheckCapsule
+//		(
+//			this.collider.bounds.center,
+//			new Vector3 (this.collider.bounds.center.x, this.collider.bounds.min.y, this.collider.bounds.center.z),
+//			this.collider.radius * 0.9f,
+//			this.ground
+//		);
+//		return Physics.CapsuleCast
+//			(
+//				this.collider.bounds.center,
+//				new Vector3 (this.collider.bounds.center.x, this.collider.bounds.min.y, this.collider.bounds.center.z),
+//				this.collider.radius * 1.1f,
+//				Vector3.down,
+//				0.5f,
+//				this.ground
+//			);
+	}
+
 }
