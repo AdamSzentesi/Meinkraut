@@ -39,6 +39,11 @@ public class Vector3i
 		return new Vector3i(v.x + this.x, v.y + this.y, v.z + this.z);
 	}
 
+	public Vector3i subtract(Vector3i v)
+	{
+		return new Vector3i(v.x - this.x, v.y - this.y, v.z - this.z);
+	}
+
 	public override bool Equals(object obj)
 	{
 		Vector3i vector3i = (Vector3i)obj;
@@ -55,6 +60,12 @@ public class Vector3i
 		result = MULTIPLIER * result + this.y;
 		result = MULTIPLIER * result + this.z;
 
+		return result;
+	}
+
+	public Vector3i add(int number)
+	{
+		Vector3i result = new Vector3i (this.x + number, this.y + number, this.z + number);
 		return result;
 	}
 }

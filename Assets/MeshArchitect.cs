@@ -34,6 +34,16 @@ public class MeshArchitect
 		new int[] {3, 2, 7, 6},
 	};
 
+	private Vector3[][] cubeUVs =
+	{
+		new Vector3[] {new Vector3(0.00f, 0.50f), new Vector3(0.25f, 0.50f), new Vector3(0.25f, 0.25f), new Vector3(0.00f, 0.25f)},
+		new Vector3[] {new Vector3(0.50f, 0.50f), new Vector3(0.75f, 0.50f), new Vector3(0.75f, 0.25f), new Vector3(0.50f, 0.25f)},
+		new Vector3[] {new Vector3(0.75f, 0.50f), new Vector3(1.00f, 0.50f), new Vector3(1.00f, 0.25f), new Vector3(0.75f, 0.25f)},
+		new Vector3[] {new Vector3(0.25f, 0.50f), new Vector3(0.50f, 0.50f), new Vector3(0.50f, 0.25f), new Vector3(0.25f, 0.25f)},
+		new Vector3[] {new Vector3(0.50f, 0.50f), new Vector3(0.25f, 0.50f), new Vector3(0.25f, 0.75f), new Vector3(0.50f, 0.75f)},
+		new Vector3[] {new Vector3(0.25f, 0.00f), new Vector3(0.25f, 0.25f), new Vector3(0.50f, 0.25f), new Vector3(0.50f, 0.00f)},
+	};
+
 	private Vector3i[] unitDirections =
 	{
 		new Vector3i(-1, 0, 0),
@@ -48,6 +58,7 @@ public class MeshArchitect
 	public List<int> triangles;
 	public List<Vector3> normals;
 	public List<Vector2> uv;
+	public List<Vector3i> colliderPositions;
 
 	private int size;
 	private Block[,,] blocks;
@@ -59,6 +70,8 @@ public class MeshArchitect
 
 		this.vertices = new List<Vector3>();
 		this.triangles = new List<int>();
+		this.uv = new List<Vector2> ();
+		this.colliderPositions = new List<Vector3i> ();
 
 		for (int x = 0; x < this.size; x++)
 		{
@@ -78,12 +91,14 @@ public class MeshArchitect
 	//decide which sides are needed
 	void createVoxel(Vector3i position)
 	{
-		if (!hasNeighbor (position, this.unitDirections [DIR_U])) {createFace (DIR_U, position);}
-		if (!hasNeighbor (position, this.unitDirections [DIR_D])) {createFace (DIR_D, position);}
-		if (!hasNeighbor (position, this.unitDirections [DIR_L])) {createFace (DIR_L, position);}
-		if (!hasNeighbor (position, this.unitDirections [DIR_R])) {createFace (DIR_R, position);}
-		if (!hasNeighbor (position, this.unitDirections [DIR_F])) {createFace (DIR_F, position);}
-		if (!hasNeighbor (position, this.unitDirections [DIR_B])) {createFace (DIR_B, position);}
+		bool isInside = true;
+		if (!hasNeighbor (position, this.unitDirections [DIR_U])) {createFace (DIR_U, position); isInside = false;}
+		if (!hasNeighbor (position, this.unitDirections [DIR_D])) {createFace (DIR_D, position); isInside = false;}
+		if (!hasNeighbor (position, this.unitDirections [DIR_L])) {createFace (DIR_L, position); isInside = false;}
+		if (!hasNeighbor (position, this.unitDirections [DIR_R])) {createFace (DIR_R, position); isInside = false;}
+		if (!hasNeighbor (position, this.unitDirections [DIR_F])) {createFace (DIR_F, position); isInside = false;}
+		if (!hasNeighbor (position, this.unitDirections [DIR_B])) {createFace (DIR_B, position); isInside = false;}
+		if (!isInside) {this.colliderPositions.Add(position);}
 	}
 
 	//add a new face to geometry
@@ -103,6 +118,10 @@ public class MeshArchitect
 
 		//normals
 		//uv
+		this.uv.Add(this.cubeUVs[direction][0]);
+		this.uv.Add(this.cubeUVs[direction][1]);
+		this.uv.Add(this.cubeUVs[direction][2]);
+		this.uv.Add(this.cubeUVs[direction][3]);
 	}
 
 	private Vector3[] getFaceVertices(int direction, Vector3i position)

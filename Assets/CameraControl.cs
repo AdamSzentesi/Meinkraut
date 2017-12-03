@@ -17,6 +17,6 @@ public class CameraControl : MonoBehaviour
 		this.pitchInput = Input.GetAxis("Mouse Y");
 		float angularVelocity = this.transform.parent.GetComponent<PlayerController> ().angularVelocity;
 
-		transform.rotation = Quaternion.AngleAxis (pitchInput * Time.deltaTime * angularVelocity, Vector3.right);
+		transform.rotation *= Quaternion.AngleAxis (pitchInput * Time.deltaTime * angularVelocity, Vector3.right);
 	}
 }

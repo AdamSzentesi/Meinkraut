@@ -12,7 +12,8 @@ public class PlayerController : MonoBehaviour
 	private Quaternion targetRotation;
 	private Vector3 targetVelocity;
 
-	private float moveInput = 0;
+	private float walkInput = 0;
+	private float strafeInput = 0;
 	private float turnInput = 0;
 	private float jumpInput = 0;
 	private Vector3 gravity = Physics.gravity;
@@ -32,7 +33,8 @@ public class PlayerController : MonoBehaviour
 	
 	void Update()
 	{
-		this.moveInput = Input.GetAxis("Vertical");
+		this.walkInput = Input.GetAxis("Vertical");
+		this.strafeInput = Input.GetAxis("Horizontal");
 		this.turnInput = Input.GetAxis("Mouse X");
 		this.jumpInput = Input.GetAxis("Jump");
 		turn();
@@ -54,13 +56,23 @@ public class PlayerController : MonoBehaviour
 
 	void walk()
 	{
-		if (this.moveInput != 0)
+		if (this.walkInput != 0 || this.strafeInput != 0)
 		{
-			this.targetVelocity.z = moveInput * this.translationSpeed;
+			if (isGrounded ())
+			{
+				this.targetVelocity.z = walkInput * this.translationSpeed;
+				this.targetVelocity.x = strafeInput * this.translationSpeed;
+			}
+			else
+			{
+				this.targetVelocity.z = walkInput * this.translationSpeed;
+				this.targetVelocity.x = strafeInput * this.translationSpeed;
+			}
 		}
 		else
 		{
 			this.targetVelocity.z = 0;
+			this.targetVelocity.x = 0;
 		}
 	}
 
@@ -68,7 +80,6 @@ public class PlayerController : MonoBehaviour
 	{
 		if (isGrounded())
 		{
-			print ("GR");
 			if (this.jumpInput > 0)
 			{
 				//jump
@@ -87,6 +98,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	//TODO: smarter raycasting, this gets stuck ok walls
 	private bool isGrounded()
 	{
 		return Physics.Raycast(this.transform.position, Vector3.down, 1.1f, this.ground);

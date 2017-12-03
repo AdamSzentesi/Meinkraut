@@ -5,6 +5,7 @@ using UnityEngine;
 public class Block
 {
 	public int type = 0;
+	public bool hasNeighbor = false;
 
 	void Start ()
 	{
