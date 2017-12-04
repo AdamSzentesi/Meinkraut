@@ -60,7 +60,7 @@ public class Chunk : MonoBehaviour
 		List<Vector3i> result = new List<Vector3i>();
 
 		Vector3i intPlayerPosition = new Vector3i ((int)playerPosition.x, (int)playerPosition.y, (int)playerPosition.z);
-		intPlayerPosition = this.position.subtract (intPlayerPosition);
+		intPlayerPosition = intPlayerPosition.subtract (this.position);
 
 		Vector3i maxDistance = new Vector3i ();
 		Vector3i minDistance = new Vector3i ();
@@ -91,7 +91,7 @@ public class Chunk : MonoBehaviour
 							for (int y = 0; y < (endY - startY); y++)
 							{
 								Vector3i finalPosition = new Vector3i(x + startX, y + startY, z + startZ);
-								if(this.blocks[finalPosition.x, finalPosition.y, finalPosition.z].type > 0)
+								if(this.blocks[finalPosition.x, finalPosition.y, finalPosition.z].type > 0 && !this.blocks[finalPosition.x, finalPosition.y, finalPosition.z].isInside)
 								{
 									result.Add (finalPosition);
 								}

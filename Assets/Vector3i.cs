@@ -41,7 +41,7 @@ public class Vector3i
 
 	public Vector3i subtract(Vector3i v)
 	{
-		return new Vector3i(v.x - this.x, v.y - this.y, v.z - this.z);
+		return new Vector3i(this.x - v.x, this.y - v.y, this.z - v.z);
 	}
 
 	public override bool Equals(object obj)

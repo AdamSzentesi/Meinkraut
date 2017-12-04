@@ -58,7 +58,7 @@ public class MeshArchitect
 	public List<int> triangles;
 	public List<Vector3> normals;
 	public List<Vector2> uv;
-	public List<Vector3i> colliderPositions;
+	//public List<Vector3i> colliderPositions;
 
 	private int size;
 	private Block[,,] blocks;
@@ -71,7 +71,7 @@ public class MeshArchitect
 		this.vertices = new List<Vector3>();
 		this.triangles = new List<int>();
 		this.uv = new List<Vector2> ();
-		this.colliderPositions = new List<Vector3i> ();
+		//this.colliderPositions = new List<Vector3i> ();
 
 		for (int x = 0; x < this.size; x++)
 		{
@@ -89,7 +89,7 @@ public class MeshArchitect
 	}
 
 	//decide which sides are needed
-	void createVoxel(Vector3i position)
+	private void createVoxel(Vector3i position)
 	{
 		bool isInside = true;
 		if (!hasNeighbor (position, this.unitDirections [DIR_U])) {createFace (DIR_U, position); isInside = false;}
@@ -98,7 +98,8 @@ public class MeshArchitect
 		if (!hasNeighbor (position, this.unitDirections [DIR_R])) {createFace (DIR_R, position); isInside = false;}
 		if (!hasNeighbor (position, this.unitDirections [DIR_F])) {createFace (DIR_F, position); isInside = false;}
 		if (!hasNeighbor (position, this.unitDirections [DIR_B])) {createFace (DIR_B, position); isInside = false;}
-		if (!isInside) {this.colliderPositions.Add(position);}
+		//if (!isInside) {this.colliderPositions.Add(position);}
+		this.blocks[position.x, position.y, position.z].isInside = isInside;
 	}
 
 	//add a new face to geometry

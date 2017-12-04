@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-	private int viewDistance = 1;
-	private int chunkSize = 16;
-	public GameObject[,] chunks;
 	public GameObject player;
+
+	private int viewDistance = 2;
+	private int chunkSize = 16;
+	private GameObject[,] chunks;
+
 	private Transform playerTransform;
 	private Vector3i playerChunkPosition;
 
@@ -24,15 +26,16 @@ public class World : MonoBehaviour
 		this.playerTransform = this.player.GetComponent<Transform> ();
 		this.playerChunkPosition = getChunkPosition (playerTransform.position);
 
-		for (int x = 0; x < this.viewDistance * 2 + 1; x++)
+		for (int x = 0; x < this.chunks.GetLength(0); x++)
 		{
-			for (int z = 0; z < this.viewDistance * 2 + 1; z++)
+			for (int z = 0; z < this.chunks.GetLength(1); z++)
 			{
 				createChunk(x, z);
 				updateColliders (x, z);
 			}
 		}
-
+//		DDA.getPoints(new Vector3i(0, 0, 0), new Vector3i(4, 3, 0));
+		DDA.getPoints (new Vector3 (-1.32849399f,1.4215488f, 0.0f), new Vector3 (4.13839787f,-2.50394962f, 0.0f));
 		//drawChunks ();
 	}
 
@@ -153,7 +156,7 @@ public class World : MonoBehaviour
 
 	private void createChunk(int x, int z)
 	{
-		print ("CREATE");
+//		print ("CREATE");
 		Vector3i chunkPosition = new Vector3i (x - this.viewDistance, 0, z - this.viewDistance).add (playerChunkPosition);
 		GameObject newChunk = new GameObject ("Chunk_" + chunkPosition.x + "_" + chunkPosition.z);
 		this.chunks[x, z] = newChunk;
