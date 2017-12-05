@@ -52,7 +52,7 @@ public class Chunk : MonoBehaviour
 		MeshFilter meshFilter = GetComponent<MeshFilter> ();
 		meshFilter.mesh = mesh;
 
-		GetComponent<MeshRenderer> ().material = Resources.Load ("Materials/Material_1") as Material;
+		GetComponent<MeshRenderer> ().material = Resources.Load ("Materials/block1") as Material;
 	}
 
 	public List<Vector3i> getColliderVoxels(Vector3 playerPosition, int colliderDistance)

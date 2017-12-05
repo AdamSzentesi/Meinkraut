@@ -19,12 +19,15 @@ public class World : MonoBehaviour
 
 	void Start ()
 	{
+		//player setup
+		this.playerTransform = this.player.GetComponent<Transform> ();
+		this.playerChunkPosition = getChunkPosition (playerTransform.position);
+		this.player.AddComponent<Inventory> ();
+
 		this.chunks = new GameObject[this.viewDistance * 2 + 1, this.viewDistance * 2 + 1];
 		this.terrainCollider = new GameObject ();
 		this.terrainCollider.name = "terrainCollider";
 		this.blockColliders = new List<GameObject> ();
-		this.playerTransform = this.player.GetComponent<Transform> ();
-		this.playerChunkPosition = getChunkPosition (playerTransform.position);
 
 		for (int x = 0; x < this.chunks.GetLength(0); x++)
 		{

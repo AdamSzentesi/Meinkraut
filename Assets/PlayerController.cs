@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
 		this.turnInput = Input.GetAxis("Mouse X");
 		this.jumpInput = Input.GetAxis("Jump");
 		turn();
+		inventory();
 	}
 
 	void FixedUpdate()
@@ -52,6 +53,16 @@ public class PlayerController : MonoBehaviour
 	{
 		this.targetRotation *= Quaternion.AngleAxis (turnInput * Time.deltaTime * this.angularVelocity, Vector3.up);
 		transform.rotation = this.targetRotation;
+	}
+
+	void inventory()
+	{
+		if (Input.GetKeyDown (KeyCode.Q)){this.GetComponent<Inventory> ().previousItem();}
+		if (Input.GetKeyDown (KeyCode.E)){this.GetComponent<Inventory> ().nextItem();}
+		if (Input.GetKeyDown (KeyCode.Keypad1)){this.GetComponent<Inventory> ().selectItem (0);}
+		if (Input.GetKeyDown (KeyCode.Keypad2)){this.GetComponent<Inventory> ().selectItem (1);}
+		if (Input.GetKeyDown (KeyCode.Keypad3)){this.GetComponent<Inventory> ().selectItem (2);}
+		if (Input.GetKeyDown (KeyCode.Keypad4)){this.GetComponent<Inventory> ().selectItem (3);}
 	}
 
 	void walk()
