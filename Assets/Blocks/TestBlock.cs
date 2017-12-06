@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryItem : ScriptableObject
+public class TestBlock : MonoBehaviour
 {
-	public Sprite sprite;
+	private int type = 0;
+
+	void Start ()
+	{
+		
+	}
 
 }

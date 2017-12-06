@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+	public InventoryRenderer inventoryRenderer;
 	private int slotCapacity = 20;
 	private int activeSlot = 0;
 	private InventorySlot[] slots = new InventorySlot[4];
@@ -43,7 +44,7 @@ public class Inventory : MonoBehaviour
 
 	public void addItem()
 	{
-		print ("Inventory: addItem");
+		//print ("Inventory: addItem");
 	}
 
 	void Start ()

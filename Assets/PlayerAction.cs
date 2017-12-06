@@ -20,4 +20,13 @@ public class PlayerAction : MonoBehaviour
 	{
 		this.inventory.addItem ();
 	}
+
+	void OnTriggerEnter(Collider trigger)
+	{
+		if (trigger.gameObject.CompareTag ("Item"))
+		{
+			print ("BUM");
+		}
+
+	}
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
+	//Random random = new Random();
+
 	public Vector3i position = new Vector3i(0, 0, 0);
 
 	public int size = 4;
@@ -24,7 +26,7 @@ public class Chunk : MonoBehaviour
 					this.blocks [x, y, z] = new Block();
 					if (y < terrainHeight)
 					{
-						this.blocks [x, y, z].type = 1;
+						this.blocks [x, y, z].type = (Random.Range(0, 5) + 1);
 					}
 				}
 			}
@@ -52,7 +54,7 @@ public class Chunk : MonoBehaviour
 		MeshFilter meshFilter = GetComponent<MeshFilter> ();
 		meshFilter.mesh = mesh;
 
-		GetComponent<MeshRenderer> ().material = Resources.Load ("Materials/block1") as Material;
+		GetComponent<MeshRenderer> ().material = Resources.Load ("Materials/block") as Material;
 	}
 
 	public List<Vector3i> getColliderVoxels(Vector3 playerPosition, int colliderDistance)

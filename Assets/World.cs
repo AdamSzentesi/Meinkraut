@@ -37,8 +37,8 @@ public class World : MonoBehaviour
 				updateColliders (x, z);
 			}
 		}
-//		DDA.getPoints(new Vector3i(0, 0, 0), new Vector3i(4, 3, 0));
-		DDA.getPoints (new Vector3 (-1.32849399f,1.4215488f, 0.0f), new Vector3 (4.13839787f,-2.50394962f, 0.0f));
+
+		//DDA.getPoints (new Vector3 (-1.32849399f,1.4215488f, 0.0f), new Vector3 (4.13839787f,-2.50394962f, 0.0f));
 		//drawChunks ();
 	}
 
@@ -51,7 +51,7 @@ public class World : MonoBehaviour
 		if (currentChunkPosition.x != this.playerChunkPosition.x)
 		{
 			this.playerChunkPosition.set (currentChunkPosition);
-			scrollChunks (this.playerChunkPosition.x - currentChunkPosition.x);
+			//scrollChunks (this.playerChunkPosition.x - currentChunkPosition.x);
 		}
 
 //		if (!currentChunkPosition.Equals(this.playerChunkPosition))
@@ -112,26 +112,6 @@ public class World : MonoBehaviour
 		result.z = Mathf.RoundToInt(position.z / this.chunkSize);
 		return result;
 	}
-
-	//private updateChunks()
-
-//	private void drawChunks()
-//	{
-//		for (int x = -this.viewDistance; x < this.viewDistance + 1; x++)
-//		{
-//			for (int z = -this.viewDistance; z < this.viewDistance + 1; z++)
-//			{
-//				GameObject chunk = new GameObject("Chunk_" + x + "_" + z);
-//				chunk.AddComponent<MeshFilter> ();
-//				chunk.AddComponent<MeshRenderer> ();
-//				chunk.AddComponent<MeshCollider> ();
-//				chunk.AddComponent<Chunk> ();
-//				chunk.GetComponent<Chunk> ().size = this.chunkSize;
-//				chunk.GetComponent<Chunk> ().position.set(x * chunkSize, 0, z * chunkSize);
-//				chunk.transform.SetPositionAndRotation (new Vector3(x * chunkSize - chunkSize / 2, 0, z * chunkSize - chunkSize / 2), Quaternion.identity);
-//			}
-//		}
-//	}
 
 	private void scrollChunks(int amount)
 	{

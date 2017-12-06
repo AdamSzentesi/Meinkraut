@@ -4,54 +4,15 @@ using UnityEngine;
 
 public class MeshArchitect
 {
-	//direction keys
-	private const int DIR_L = 0;
-	private const int DIR_R = 1;
-	private const int DIR_F = 2;
-	private const int DIR_B = 3;
-	private const int DIR_U = 4;
-	private const int DIR_D = 5;
-
-	private Vector3[] cubeVertices =
+	private ACubeData cube = new CubeData();
+	private Vector2[] atlasData = new Vector2[]
 	{
-		new Vector3(0.5f, 0.5f, 0.5f),
-		new Vector3(-0.5f, 0.5f, 0.5f),
-		new Vector3(-0.5f, -0.5f, 0.5f),
-		new Vector3(0.5f, -0.5f, 0.5f),
-		new Vector3(-0.5f, 0.5f, -0.5f),
-		new Vector3(0.5f, 0.5f, -0.5f),
-		new Vector3(0.5f, -0.5f, -0.5f),
-		new Vector3(-0.5f, -0.5f, -0.5f),
-	};
-
-	private int[][] cubeIndices =
-	{
-		new int[] {1, 4, 7, 2},		
-		new int[] {5, 0, 3, 6},
-		new int[] {0, 1, 2, 3},
-		new int[] {4, 5, 6, 7},
-		new int[] {5, 4, 1, 0},
-		new int[] {3, 2, 7, 6},
-	};
-
-	private Vector3[][] cubeUVs =
-	{
-		new Vector3[] {new Vector3(0.00f, 0.50f), new Vector3(0.25f, 0.50f), new Vector3(0.25f, 0.25f), new Vector3(0.00f, 0.25f)},
-		new Vector3[] {new Vector3(0.50f, 0.50f), new Vector3(0.75f, 0.50f), new Vector3(0.75f, 0.25f), new Vector3(0.50f, 0.25f)},
-		new Vector3[] {new Vector3(0.75f, 0.50f), new Vector3(1.00f, 0.50f), new Vector3(1.00f, 0.25f), new Vector3(0.75f, 0.25f)},
-		new Vector3[] {new Vector3(0.25f, 0.50f), new Vector3(0.50f, 0.50f), new Vector3(0.50f, 0.25f), new Vector3(0.25f, 0.25f)},
-		new Vector3[] {new Vector3(0.50f, 0.50f), new Vector3(0.25f, 0.50f), new Vector3(0.25f, 0.75f), new Vector3(0.50f, 0.75f)},
-		new Vector3[] {new Vector3(0.25f, 0.00f), new Vector3(0.25f, 0.25f), new Vector3(0.50f, 0.25f), new Vector3(0.50f, 0.00f)},
-	};
-
-	private Vector3i[] unitDirections =
-	{
-		new Vector3i(-1, 0, 0),
-		new Vector3i(1, 0, 0),
-		new Vector3i(0, 0, 1),
-		new Vector3i(0, 0, -1),
-		new Vector3i(0, 1, 0),
-		new Vector3i(0, -1, 0),
+		new Vector2(0.000f, 0.000f),
+		new Vector2(0.000f, 0.125f),
+		new Vector2(0.000f, 0.250f),
+		new Vector2(0.000f, 0.375f),
+		new Vector2(0.000f, 0.500f),
+		new Vector2(0.000f, 0.625f),
 	};
 
 	public List<Vector3> vertices;
@@ -81,7 +42,7 @@ public class MeshArchitect
 				{
 					if (this.blocks [x, y, z].type != 0)
 					{
-						createVoxel(new Vector3i(x, y, z));
+						createVoxel(new Vector3i(x, y, z), this.blocks [x, y, z].type);
 					}
 				}
 			}
@@ -89,21 +50,21 @@ public class MeshArchitect
 	}
 
 	//decide which sides are needed
-	private void createVoxel(Vector3i position)
+	private void createVoxel(Vector3i position, int atlasPosition)
 	{
 		bool isInside = true;
-		if (!hasNeighbor (position, this.unitDirections [DIR_U])) {createFace (DIR_U, position); isInside = false;}
-		if (!hasNeighbor (position, this.unitDirections [DIR_D])) {createFace (DIR_D, position); isInside = false;}
-		if (!hasNeighbor (position, this.unitDirections [DIR_L])) {createFace (DIR_L, position); isInside = false;}
-		if (!hasNeighbor (position, this.unitDirections [DIR_R])) {createFace (DIR_R, position); isInside = false;}
-		if (!hasNeighbor (position, this.unitDirections [DIR_F])) {createFace (DIR_F, position); isInside = false;}
-		if (!hasNeighbor (position, this.unitDirections [DIR_B])) {createFace (DIR_B, position); isInside = false;}
+		if (!hasNeighbor (position, cube.UnitDirections [cube.DIR_U])) {createFace (cube.DIR_U, position, atlasPosition); isInside = false;}
+		if (!hasNeighbor (position, cube.UnitDirections [cube.DIR_D])) {createFace (cube.DIR_D, position, atlasPosition); isInside = false;}
+		if (!hasNeighbor (position, cube.UnitDirections [cube.DIR_L])) {createFace (cube.DIR_L, position, atlasPosition); isInside = false;}
+		if (!hasNeighbor (position, cube.UnitDirections [cube.DIR_R])) {createFace (cube.DIR_R, position, atlasPosition); isInside = false;}
+		if (!hasNeighbor (position, cube.UnitDirections [cube.DIR_F])) {createFace (cube.DIR_F, position, atlasPosition); isInside = false;}
+		if (!hasNeighbor (position, cube.UnitDirections [cube.DIR_B])) {createFace (cube.DIR_B, position, atlasPosition); isInside = false;}
 		//if (!isInside) {this.colliderPositions.Add(position);}
 		this.blocks[position.x, position.y, position.z].isInside = isInside;
 	}
 
 	//add a new face to geometry
-	void createFace(int direction, Vector3i position)
+	void createFace(int direction, Vector3i position, int atlasPosition)
 	{
 		//vertices
 		this.vertices.AddRange (getFaceVertices(direction, position));
@@ -119,10 +80,10 @@ public class MeshArchitect
 
 		//normals
 		//uv
-		this.uv.Add(this.cubeUVs[direction][0]);
-		this.uv.Add(this.cubeUVs[direction][1]);
-		this.uv.Add(this.cubeUVs[direction][2]);
-		this.uv.Add(this.cubeUVs[direction][3]);
+		this.uv.Add(cube.getUVs(direction, 0) + this.atlasData[atlasPosition]);
+		this.uv.Add(cube.getUVs(direction, 1) + this.atlasData[atlasPosition]);
+		this.uv.Add(cube.getUVs(direction, 2) + this.atlasData[atlasPosition]);
+		this.uv.Add(cube.getUVs(direction, 3) + this.atlasData[atlasPosition]);
 	}
 
 	private Vector3[] getFaceVertices(int direction, Vector3i position)
@@ -130,7 +91,7 @@ public class MeshArchitect
 		Vector3[] result = new Vector3[4];
 		for(int i = 0; i < 4; i++)
 		{
-			result [i] = position.add(cubeVertices[this.cubeIndices[direction][i]]);
+			result [i] = position.add(cube.CubeVertices[cube.CubeIndices[direction][i]]);
 		}
 		return result;
 	}

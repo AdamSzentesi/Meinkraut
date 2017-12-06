@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryItem : ScriptableObject
+public class InventoryRenderer : MonoBehaviour
 {
-	public Sprite sprite;
 
 }
