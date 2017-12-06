@@ -15,14 +15,14 @@ Platform assembly: C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\minetest_Da
 Loading C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\minetest_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\minetest_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\minetest_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-- Completed reload, in  0.023 seconds
+- Completed reload, in  0.024 seconds
 Platform assembly: C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\minetest_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\minetest_Data\Managed\System.dll (this message is harmless)
 desktop: 1280x1024 60Hz; virtual: 1280x1024 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.780870 ms
+UnloadTime: 1.587925 ms
 X: -1
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
@@ -108,5 +108,5 @@ X: 4
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 4804 -> priority: 1 
-  Thread -> id: 2ff0 -> priority: 1 
+  Thread -> id: 32a8 -> priority: 1 
+  Thread -> id: 2e80 -> priority: 1 

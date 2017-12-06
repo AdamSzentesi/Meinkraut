@@ -6,7 +6,7 @@ public class World : MonoBehaviour
 {
 	public GameObject player;
 
-	private int viewDistance = 2;
+	private int viewDistance = 6;
 	private int chunkSize = 16;
 	private GameObject[,] chunks;
 
@@ -22,7 +22,7 @@ public class World : MonoBehaviour
 		//player setup
 		this.playerTransform = this.player.GetComponent<Transform> ();
 		this.playerChunkPosition = getChunkPosition (playerTransform.position);
-		this.player.AddComponent<Inventory> ();
+//		this.player.AddComponent<Inventory> ();
 
 		this.chunks = new GameObject[this.viewDistance * 2 + 1, this.viewDistance * 2 + 1];
 		this.terrainCollider = new GameObject ();

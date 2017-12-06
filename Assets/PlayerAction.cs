@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerAction : MonoBehaviour
 {
-	public Inv inventory;
+	public Inventory inventory;
 
 	void Start(){}
 
@@ -12,7 +12,7 @@ public class PlayerAction : MonoBehaviour
 	{
 		if (trigger.gameObject.CompareTag ("Item"))
 		{
-			InvItem inventoryItem = trigger.gameObject.GetComponent<InvItem> ();
+			InventoryItem inventoryItem = trigger.gameObject.GetComponent<InventoryItem> ();
 			if (addItem (inventoryItem))
 			{
 				trigger.gameObject.SetActive (false);
@@ -20,7 +20,7 @@ public class PlayerAction : MonoBehaviour
 		}
 	}
 
-	private bool addItem(InvItem inventoryItem)
+	private bool addItem(InventoryItem inventoryItem)
 	{
 		return this.inventory.addItem (inventoryItem);
 	}
