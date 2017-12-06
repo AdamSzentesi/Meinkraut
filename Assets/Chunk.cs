@@ -21,12 +21,14 @@ public class Chunk : MonoBehaviour
 			for (int z = 0; z < this.size; z++)
 			{
 				int terrainHeight = getHeight(x + this.position.x, z + this.position.z);
+//				terrainHeight = 16;
 				for (int y = 0; y < this.size; y++)
 				{
 					this.blocks [x, y, z] = new Block();
 					if (y < terrainHeight)
 					{
-						this.blocks [x, y, z].type = (Random.Range(0, 5) + 1);
+						this.blocks [x, y, z].type = getType(x + this.position.x, y + this.position.y, z + this.position.z);
+						this.blocks [x, y, z].transparent = false;
 					}
 				}
 			}
@@ -39,8 +41,20 @@ public class Chunk : MonoBehaviour
 	//TODO: better noise - assymatrical
 	private int getHeight(int x, int y)
 	{
-		int result = (int)(Mathf.PerlinNoise (x / this.noiseSize, y / this.noiseSize) * biomeHeight + size / 2);
+		//int result = (int)(Mathf.PerlinNoise (x / this.noiseSize, y / this.noiseSize) * biomeHeight + size / 2);
+		int result = (int)(Mathf.PerlinNoise (x / this.noiseSize, y / this.noiseSize) * 16 + 2);
 		return result;
+	}
+
+	private int getType(int x, int y, int z)
+	{
+		//int result = (Random.Range (0, 5) + 1);
+
+		float noise = Mathf.PerlinNoise (x / this.noiseSize * 2 + 987654, z / this.noiseSize * 2 + 123456);
+		noise += Mathf.PerlinNoise (x / this.noiseSize + 123456, y / this.noiseSize + 987654);
+		//noise += Mathf.PerlinNoise (y / this.noiseSize + 987654, z / this.noiseSize + 123456);
+
+		return (int)(noise/2 * 5) + 1;
 	}
 
 	private void updateMesh(MeshArchitect meshArchitect)

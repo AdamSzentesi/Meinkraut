@@ -40,7 +40,7 @@ public class MeshArchitect
 			{
 				for (int y = 0; y < this.size; y++)
 				{
-					if (this.blocks [x, y, z].type != 0)
+					if (!this.blocks [x, y, z].transparent)
 					{
 						createVoxel(new Vector3i(x, y, z), this.blocks [x, y, z].type);
 					}

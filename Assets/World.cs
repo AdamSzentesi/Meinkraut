@@ -51,7 +51,7 @@ public class World : MonoBehaviour
 		if (currentChunkPosition.x != this.playerChunkPosition.x)
 		{
 			this.playerChunkPosition.set (currentChunkPosition);
-			//scrollChunks (this.playerChunkPosition.x - currentChunkPosition.x);
+			scrollChunks (this.playerChunkPosition.x - currentChunkPosition.x);
 		}
 
 //		if (!currentChunkPosition.Equals(this.playerChunkPosition))

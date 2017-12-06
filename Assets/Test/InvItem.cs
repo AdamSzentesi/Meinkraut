@@ -5,6 +5,8 @@ using UnityEngine;
 public class InvItem : MonoBehaviour
 {
 	public Sprite sprite;
+	public int type;
 
-
+	void Start(){}
+	void Update(){}
 }

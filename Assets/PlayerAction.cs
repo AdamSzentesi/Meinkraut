@@ -4,29 +4,25 @@ using UnityEngine;
 
 public class PlayerAction : MonoBehaviour
 {
-	public Inventory inventory;
+	public Inv inventory;
 
-	void Start ()
-	{
-		
-	}
-	
-	void Update ()
-	{
-		addItem ();
-	}
+	void Start(){}
 
-	private void addItem()
-	{
-		this.inventory.addItem ();
-	}
-
-	void OnTriggerEnter(Collider trigger)
+	public void OnTriggerEnter(Collider trigger)
 	{
 		if (trigger.gameObject.CompareTag ("Item"))
 		{
-			print ("BUM");
+			InvItem inventoryItem = trigger.gameObject.GetComponent<InvItem> ();
+			if (addItem (inventoryItem))
+			{
+				trigger.gameObject.SetActive (false);
+			}
 		}
-
 	}
+
+	private bool addItem(InvItem inventoryItem)
+	{
+		return this.inventory.addItem (inventoryItem);
+	}
+
 }

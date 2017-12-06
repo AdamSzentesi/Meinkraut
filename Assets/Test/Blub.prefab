@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4348156766269466}
   - component: {fileID: 65946292164726340}
-  - component: {fileID: 114382788798285228}
+  - component: {fileID: 114582240338009294}
   m_Layer: 0
   m_Name: Blub
   m_TagString: Item
@@ -135,9 +135,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62e8a6238133ef848bf70760c564d524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rate: 1
+  rate: 4
   amplitude: 0.2
---- !u!114 &114382788798285228
+--- !u!114 &114582240338009294
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -149,3 +149,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 0}
+  type: 0
