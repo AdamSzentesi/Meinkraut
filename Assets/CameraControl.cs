@@ -21,19 +21,29 @@ public class CameraControl : MonoBehaviour
 
 		transform.rotation *= Quaternion.AngleAxis (pitchInput * Time.deltaTime * angularVelocity, Vector3.right);
 
-		//Matrix4x4 worldMatrix = this.transform.localToWorldMatrix;
-		Vector3 worldPosition = this.transform.position;
-		Vector3 worldDirection = this.transform.forward;
+		//target display
+		Vector3i target = getTarget();
+		if (target != null)
+		{
+			this.debugObject.transform.position = target.floatify();
+		}
+
+	}
+
+	public Vector3i getTarget()
+	{
+		Vector3i result = null;
 
 		RaycastHit raycastHit;
-		bool rayHit = Physics.Raycast (worldPosition, worldDirection, out raycastHit, 5.0f);
+		bool rayHit = Physics.Raycast (this.transform.position, this.transform.forward, out raycastHit, 5.0f);
 		if (rayHit)
 		{
 			Vector3 hitNormal = raycastHit.normal;
 			Vector3 hitPoint = raycastHit.point - hitNormal * 0.2f;
-			Vector3 intPosition = new Vector3 (Mathf.Round(hitPoint.x),Mathf.Round(hitPoint.y), Mathf.Round(hitPoint.z));
-			this.debugObject.transform.position = intPosition;
+			result = new Vector3i ((int)Mathf.Round(hitPoint.x),(int)Mathf.Round(hitPoint.y), (int)Mathf.Round(hitPoint.z));
 		}
 
+		return result;
 	}
+
 }

@@ -68,4 +68,9 @@ public class Vector3i
 		Vector3i result = new Vector3i (this.x + number, this.y + number, this.z + number);
 		return result;
 	}
+
+	public Vector3 floatify()
+	{
+		return new Vector3 (this.x, this.y, this.z);
+	}
 }

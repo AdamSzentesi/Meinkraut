@@ -6,9 +6,13 @@ using UnityEngine.UI;
 public class InventoryRenderer : MonoBehaviour
 {
 	public GameObject slotImageTemplate;
+	public GameObject slotSelectedTemplate;
 
 	private bool initialized = false;
+	private int initTimer = 2;
+
 	private GameObject[] slotImages;
+	private GameObject slotSelected;
 
 	public void init(int slotCount)
 	{
@@ -21,12 +25,24 @@ public class InventoryRenderer : MonoBehaviour
 				newSlot.transform.SetParent (this.transform);
 				this.slotImages [i] = newSlot;
 			}
+			GameObject newSelected = GameObject.Instantiate (this.slotSelectedTemplate);
+			this.slotSelected = newSelected;
+			this.slotSelected.transform.SetParent (this.transform);
+		}
+	}
+
+	//I know, it is terrible
+	void Update()
+	{
+		if (this.initTimer > 0)
+		{
+			this.slotSelected.transform.position = this.slotImages [0].transform.position;
+			this.initTimer--;
 		}
 	}
 
 	public void setSprite(int slotId, Sprite sprite)
 	{
-		print ("sprite: " + this.slotImages[slotId].GetComponent<Image>().sprite);
 		this.slotImages[slotId].GetComponent<Image>().sprite = sprite;
 	}
 
@@ -35,12 +51,9 @@ public class InventoryRenderer : MonoBehaviour
 		this.slotImages[slotId].GetComponent<InventorySlotUpdateText>().updateText(count.ToString());
 	}
 
-//	public void redraw2(InvSlot[] inventorySlots)
-//	{
-//		for (int i = 0; i < inventorySlots.Length; i++)
-//		{
-//			GameObject newSlot = GameObject.Instantiate (this.slotImageTemplate);
-//			newSlot.transform.SetParent (this.transform);
-//		}
-//	}
+	public void updateSelected(int slotId)
+	{
+		this.slotSelected.transform.position = this.slotImages [slotId].transform.position;
+	}
+
 }

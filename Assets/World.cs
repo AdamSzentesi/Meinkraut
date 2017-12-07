@@ -5,13 +5,13 @@ using UnityEngine;
 public class World : MonoBehaviour
 {
 	public GameObject player;
+	private Transform playerTransform;
+	private Vector3i playerChunkPosition;
 
-	private int viewDistance = 6;
+	private int viewDistance = 1;
 	private int chunkSize = 16;
 	private GameObject[,] chunks;
 
-	private Transform playerTransform;
-	private Vector3i playerChunkPosition;
 
 	private int colliderDistance = 4;
 	private GameObject terrainCollider;
@@ -22,7 +22,7 @@ public class World : MonoBehaviour
 		//player setup
 		this.playerTransform = this.player.GetComponent<Transform> ();
 		this.playerChunkPosition = getChunkPosition (playerTransform.position);
-//		this.player.AddComponent<Inventory> ();
+		this.player.GetComponent<PlayerAction> ().setWorld (this);
 
 		this.chunks = new GameObject[this.viewDistance * 2 + 1, this.viewDistance * 2 + 1];
 		this.terrainCollider = new GameObject ();
@@ -150,7 +150,25 @@ public class World : MonoBehaviour
 		this.chunks[x, z].GetComponent<Chunk> ().position.set(chunkPosition.x * chunkSize, 0, chunkPosition.z * chunkSize);
 		Vector3 worldPosition = new Vector3 (chunkPosition.x * chunkSize, 0, chunkPosition.z * chunkSize);
 		this.chunks[x, z].transform.SetPositionAndRotation (worldPosition, Quaternion.identity);
-		this.chunks [x, z].GetComponent<Chunk> ().Initiate ();
+		this.chunks [x, z].GetComponent<Chunk> ().initialize ();
+	}
+
+	public int dig(Vector3i position)
+	{
+		int diggedBlock = 0;
+		for (int x = 0; x < this.chunks.GetLength(0); x++)
+		{
+			for (int z = 0; z < this.chunks.GetLength(1); z++)
+			{
+				Chunk chunkScript = this.chunks[x, z].GetComponent<Chunk> ();
+				bool isInside = chunkScript.isInside (position);
+				if (isInside)
+				{
+					return chunkScript.dig (position);
+				}
+			}
+		}
+		return diggedBlock;
 	}
 
 }

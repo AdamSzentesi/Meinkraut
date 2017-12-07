@@ -50,6 +50,7 @@ public class MeshArchitect
 	}
 
 	//decide which sides are needed
+	//TODO: check neighbor chunks also
 	private void createVoxel(Vector3i position, int atlasPosition)
 	{
 		bool isInside = true;

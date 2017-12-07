@@ -13,7 +13,7 @@ public class Chunk : MonoBehaviour
 	public float biomeHeight = 10f;
 	public Block[,,] blocks;
 
-	public void Initiate()
+	public void initialize()
 	{
 		this.blocks = new Block[this.size, this.size, this.size];
 		for (int x = 0; x < this.size; x++)
@@ -120,4 +120,42 @@ public class Chunk : MonoBehaviour
 		}
 		return result;
 	}
+
+	public bool isInside(Vector3i position)
+	{
+		if (position.x >= this.position.x && position.x < (this.position.x + this.size))
+		{
+			if (position.z >= this.position.z && position.z < (this.position.z + this.size))
+			{
+				if (position.y >= this.position.y && position.y < (this.position.y + this.size))
+				{
+					//print(this.position.x + "," + this.position.y + "," + this.position.z + " IS IN");
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public int dig(Vector3i worldPosition)
+	{
+		return place (worldPosition, 0);
+	}
+
+	public int place(Vector3i worldPosition, int blockType)
+	{
+		Vector3i localPosition = worldPosition.subtract(this.position);
+		int diggedBlock = this.blocks[localPosition.x, localPosition.y, localPosition.z].type;
+
+		this.blocks [localPosition.x, localPosition.y, localPosition.z].type = blockType;
+		this.blocks [localPosition.x, localPosition.y, localPosition.z].transparent = true;
+		MeshArchitect meshArchitect = new MeshArchitect(this.size, this.blocks);
+		updateMesh (meshArchitect);
+		//print (localPosition.x + "," + localPosition.y + "," + localPosition.z);
+
+		print (diggedBlock);
+		return diggedBlock;
+	}
+
+
 }

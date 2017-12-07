@@ -5,9 +5,9 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
 	public InventoryRenderer invRenderer;
+	public int slotCount = 4;
 
 	private List<InventoryItem> items = new List<InventoryItem>();
-	private int slotCount = 4;
 	private InventorySlot[] slots;
 	private int activeSlot = 0;
 
@@ -28,7 +28,6 @@ public class Inventory : MonoBehaviour
 	public bool addItem(InventoryItem inventoryItem)
 	{
 		bool result = true;
-		print ("inventory adding type: " + inventoryItem.type);
 		if (!addToStack (inventoryItem))
 		{
 			if (!addNew (inventoryItem))
@@ -46,7 +45,6 @@ public class Inventory : MonoBehaviour
 			InventorySlot inventorySlot = this.slots [i];
 			if (inventorySlot.count != 0 && inventorySlot.itemType == inventoryItem.type)
 			{
-				print ("inventory adding to stack: " + inventoryItem.type);
 				inventorySlot.addItem (inventoryItem);
 				this.invRenderer.updateCounter(i, inventorySlot.count);
 				return true;
@@ -62,7 +60,6 @@ public class Inventory : MonoBehaviour
 			InventorySlot inventorySlot = this.slots [i];
 			if (inventorySlot.count == 0)
 			{
-				print ("inventory adding as new: " + inventoryItem.type);
 				inventorySlot.addItem (inventoryItem);
 				this.invRenderer.updateCounter(i, inventorySlot.count);
 				this.invRenderer.setSprite (i, inventoryItem.sprite);
@@ -76,21 +73,26 @@ public class Inventory : MonoBehaviour
 	{
 		this.activeSlot++;
 		clamp ();
-		print (this.activeSlot);
+		updateSelected ();
 	}
 
 	public void previousItem()
 	{
 		this.activeSlot--;
 		clamp ();
-		print (this.activeSlot);
+		updateSelected ();
 	}
 
 	public void selectItem(int item)
 	{
 		this.activeSlot = item;
 		clamp ();
-		print (this.activeSlot);
+		updateSelected ();
+	}
+
+	private void updateSelected()
+	{
+		this.invRenderer.updateSelected (this.activeSlot);
 	}
 
 	private void clamp()
