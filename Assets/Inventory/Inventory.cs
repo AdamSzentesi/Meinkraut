@@ -6,10 +6,11 @@ public class Inventory : MonoBehaviour
 {
 	public InventoryRenderer invRenderer;
 	public int slotCount = 4;
+	public int activeSlot = 0;
 
 	private List<InventoryItem> items = new List<InventoryItem>();
 	private InventorySlot[] slots;
-	private int activeSlot = 0;
+
 
 	void Awake()
 	{
@@ -35,6 +36,18 @@ public class Inventory : MonoBehaviour
 				result = false;
 			}
 		}
+		return result;
+	}
+
+	public InventoryItem getItem()
+	{
+//		if (this.slots [this.activeSlot].count > 0)
+//		{
+//			//this.slots [this.activeSlot].removeItem ();
+//			return this.slots[this.activeSlot].getItem();
+//		}
+		InventoryItem result = this.slots[this.activeSlot].getItem();
+		this.invRenderer.updateCounter(this.activeSlot, this.slots[this.activeSlot].count);
 		return result;
 	}
 

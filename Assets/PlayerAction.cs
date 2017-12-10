@@ -50,15 +50,15 @@ public class PlayerAction : MonoBehaviour
 				Vector3i target = this.cameraControl.getTarget (false); //get tool info!!!§
 				if (target != null)
 				{
-					byte diggedBlock = this.world.dig (target, this.damage);
+					byte diggedBlockType = this.world.dig (target, this.damage);
 					this.GetComponent<AudioSource> ().Play();
-					if (diggedBlock > 0)
+					if (diggedBlockType > 0)
 					{
 						GameObject gameObject = new GameObject ();
-						gameObject.AddComponent<InventoryItem> ().type = diggedBlock;
+						gameObject.AddComponent<InventoryItem> ().type = diggedBlockType;
 						InventoryItem newItem = gameObject.GetComponent<InventoryItem> ();
-						newItem.type = diggedBlock;
-						newItem.sprite = this.world.blockDatabase.blockMaterials[diggedBlock].inventorySprite;
+						newItem.type = diggedBlockType;
+						newItem.sprite = this.world.blockDatabase.blockMaterials[diggedBlockType].inventorySprite;
 						addItem (newItem);
 					}
 				}
@@ -67,12 +67,23 @@ public class PlayerAction : MonoBehaviour
 		}		
 	}
 
-	//TODO
 	private void place()
 	{
 		if (this.placeInput > 0)
 		{
-
+			if (this.lastCharge <= 0)
+			{
+				Vector3i target = this.cameraControl.getTarget (true);
+				if (target != null)
+				{
+					InventoryItem inventoryItem = this.inventory.getItem ();
+					if (inventoryItem != null)
+					{
+						this.world.place (target, inventoryItem.type);
+					}
+				}
+				this.lastCharge = this.rechargeTime;
+			}
 		}		
 	}
 

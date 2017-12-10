@@ -5,7 +5,8 @@ using UnityEngine;
 public class InventorySlot
 {
 	private Sprite sprite;
-	public int itemType;
+	public byte itemType;
+	private InventoryItem inventoryItem;
 	public int count;
 
 	public InventorySlot()
@@ -19,20 +20,25 @@ public class InventorySlot
 		{
 			this.sprite = inventoryItem.sprite;
 			this.itemType = inventoryItem.type;
+			this.inventoryItem = inventoryItem;
 		}
 		this.count++;
 	}
 
-	public void removeItem()
+	public InventoryItem getItem()
 	{
+		InventoryItem result = null;
 		if (this.count > 0)
 		{
+			result = this.inventoryItem;
 			this.count--;
 			if (this.count == 0)
 			{
-				this.sprite = null;
+				Debug.Log ("ZERO");
+				this.sprite = null; //TODO: original sprite
 			}
 		}
+		return result;
 	}
 
 }

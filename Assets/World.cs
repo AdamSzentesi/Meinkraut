@@ -8,7 +8,7 @@ public class World : MonoBehaviour
 	private Transform playerTransform;
 	private Vector3i playerChunkPosition;
 
-	private int viewDistance = 8;
+	private int viewDistance = 4;
 	private int chunkSize = 16;
 	private GameObject[,] chunks;
 	private Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks;
@@ -177,6 +177,23 @@ public class World : MonoBehaviour
 			}
 		}
 		return diggedBlock;
+	}
+
+	public void place(Vector3i position, byte blockType)
+	{
+		for (int x = 0; x < this.chunks.GetLength(0); x++)
+		{
+			for (int z = 0; z < this.chunks.GetLength(1); z++)
+			{
+				Chunk chunk = this.chunks[x, z].GetComponent<Chunk> ();
+				bool isInside = chunk.isInside (position);
+				if (isInside)
+				{
+					chunk.place(position, blockType);
+					addChangedBlock (new Vector3i (x, 0, z), position, blockType);
+				}
+			}
+		}
 	}
 
 	private void addChangedBlock(Vector3i chunkPosition, Vector3i blockPosition, byte blockType)

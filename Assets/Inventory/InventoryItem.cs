@@ -5,7 +5,7 @@ using UnityEngine;
 public class InventoryItem : MonoBehaviour
 {
 	public Sprite sprite;
-	public int type;
+	public byte type;
 
 	void Start(){}
 	void Update(){}
