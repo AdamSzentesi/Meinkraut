@@ -18,6 +18,10 @@ public class InventoryRenderer : MonoBehaviour
 	{
 		if (!this.initialized)
 		{
+			GameObject newSelected = GameObject.Instantiate (this.slotSelectedTemplate);
+			this.slotSelected = newSelected;
+			this.slotSelected.transform.SetParent (this.transform);
+
 			this.slotImages = new GameObject[slotCount];
 			for (int i = 0; i < slotCount; i++)
 			{
@@ -25,9 +29,6 @@ public class InventoryRenderer : MonoBehaviour
 				newSlot.transform.SetParent (this.transform);
 				this.slotImages [i] = newSlot;
 			}
-			GameObject newSelected = GameObject.Instantiate (this.slotSelectedTemplate);
-			this.slotSelected = newSelected;
-			this.slotSelected.transform.SetParent (this.transform);
 		}
 	}
 
@@ -43,7 +44,8 @@ public class InventoryRenderer : MonoBehaviour
 
 	public void setSprite(int slotId, Sprite sprite)
 	{
-		this.slotImages[slotId].GetComponent<Image>().sprite = sprite;
+		//this.slotImages[slotId].GetComponent<Image>().sprite = sprite;
+		this.slotImages[slotId].GetComponent<InventorySlotUpdateText>().image.sprite = sprite;
 	}
 
 	public void updateCounter(int slotId, int count)

@@ -9,7 +9,13 @@ public class PlayerAction : MonoBehaviour
 
 	private Inventory inventory;
 	private World world;
-	private float actionInput = 0;
+	private float digInput = 0;
+	private float placeInput = 0;
+
+	public float rechargeTime = 0.2f;
+	public int damage = 1;
+	private float lastCharge = 0.0f;
+
 
 	void Start()
 	{
@@ -19,26 +25,8 @@ public class PlayerAction : MonoBehaviour
 
 	void Update()
 	{
-		this.actionInput = Input.GetAxis("Fire1");
-
-		if (this.actionInput > 0)
-		{
-			Vector3i target = this.cameraControl.getTarget ();
-			if (target != null)
-			{
-				int diggedblock = this.world.dig (target);
-				if (diggedblock > 0)
-				{
-					GameObject gameObject = new GameObject ();
-					gameObject.AddComponent<InventoryItem> ().type = diggedblock;
-					InventoryItem newItem = gameObject.GetComponent<InventoryItem> ();
-					newItem.type = diggedblock;
-					//newItem.sprite
-					addItem (newItem);
-				}
-			}
-
-		}
+		this.digInput = Input.GetAxis("Fire1");
+		this.placeInput = Input.GetAxis("Fire2");
 
 		if (Input.GetKeyDown (KeyCode.Q)){this.inventory.previousItem();}
 		if (Input.GetKeyDown (KeyCode.E)){this.inventory.nextItem();}
@@ -46,6 +34,46 @@ public class PlayerAction : MonoBehaviour
 		//		if (Input.GetKeyDown (KeyCode.Keypad2)){this.GetComponent<Inventory> ().selectItem (1);}
 		//		if (Input.GetKeyDown (KeyCode.Keypad3)){this.GetComponent<Inventory> ().selectItem (2);}
 		//		if (Input.GetKeyDown (KeyCode.Keypad4)){this.GetComponent<Inventory> ().selectItem (3);}
+
+		dig ();
+		place ();
+
+		this.lastCharge -= Time.deltaTime;
+	}
+
+	private void dig()
+	{
+		if (this.digInput > 0)
+		{
+			if (this.lastCharge <= 0)
+			{
+				Vector3i target = this.cameraControl.getTarget (false); //get tool info!!!§
+				if (target != null)
+				{
+					byte diggedBlock = this.world.dig (target, this.damage);
+					this.GetComponent<AudioSource> ().Play();
+					if (diggedBlock > 0)
+					{
+						GameObject gameObject = new GameObject ();
+						gameObject.AddComponent<InventoryItem> ().type = diggedBlock;
+						InventoryItem newItem = gameObject.GetComponent<InventoryItem> ();
+						newItem.type = diggedBlock;
+						newItem.sprite = this.world.blockDatabase.blockMaterials[diggedBlock].inventorySprite;
+						addItem (newItem);
+					}
+				}
+				this.lastCharge = this.rechargeTime;
+			}
+		}		
+	}
+
+	//TODO
+	private void place()
+	{
+		if (this.placeInput > 0)
+		{
+
+		}		
 	}
 
 	public void OnTriggerEnter(Collider trigger)
@@ -69,4 +97,5 @@ public class PlayerAction : MonoBehaviour
 	{
 		this.world = world;
 	}
+
 }

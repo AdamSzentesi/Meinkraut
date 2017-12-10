@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class InventorySlotUpdateText : MonoBehaviour
 {
 	public Text text;
+	public Image image;
 
 	void Start () {}
 

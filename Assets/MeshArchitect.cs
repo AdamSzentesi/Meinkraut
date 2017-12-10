@@ -5,16 +5,6 @@ using UnityEngine;
 public class MeshArchitect
 {
 	private ACubeData cube = new CubeData();
-	private Vector2[] atlasData = new Vector2[]
-	{
-		new Vector2(0.000f, 0.000f),
-		new Vector2(0.000f, 0.125f),
-		new Vector2(0.000f, 0.250f),
-		new Vector2(0.000f, 0.375f),
-		new Vector2(0.000f, 0.500f),
-		new Vector2(0.000f, 0.625f),
-	};
-
 	public List<Vector3> vertices;
 	public List<int> triangles;
 	public List<Vector3> normals;
@@ -23,8 +13,9 @@ public class MeshArchitect
 
 	private int size;
 	private Block[,,] blocks;
+	private BlockDatabase blockDatabase;
 
-	public MeshArchitect(int size, Block[,,] blocks)
+	public MeshArchitect(int size, Block[,,] blocks, BlockDatabase blockDatabase)
 	{
 		this.size = size;
 		this.blocks = blocks;
@@ -32,6 +23,7 @@ public class MeshArchitect
 		this.vertices = new List<Vector3>();
 		this.triangles = new List<int>();
 		this.uv = new List<Vector2> ();
+		this.blockDatabase = blockDatabase;
 		//this.colliderPositions = new List<Vector3i> ();
 
 		for (int x = 0; x < this.size; x++)
@@ -40,9 +32,10 @@ public class MeshArchitect
 			{
 				for (int y = 0; y < this.size; y++)
 				{
-					if (!this.blocks [x, y, z].transparent)
+					byte blockType = this.blocks [x, y, z].type;
+					if (!this.blockDatabase.blockMaterials[blockType].transparent)
 					{
-						createVoxel(new Vector3i(x, y, z), this.blocks [x, y, z].type);
+						createVoxel(new Vector3i(x, y, z), blockType);
 					}
 				}
 			}
@@ -79,12 +72,11 @@ public class MeshArchitect
 		this.triangles.Add(vertexCount - 2);
 		this.triangles.Add(vertexCount - 1);
 
-		//normals
 		//uv
-		this.uv.Add(cube.getUVs(direction, 0) + this.atlasData[atlasPosition]);
-		this.uv.Add(cube.getUVs(direction, 1) + this.atlasData[atlasPosition]);
-		this.uv.Add(cube.getUVs(direction, 2) + this.atlasData[atlasPosition]);
-		this.uv.Add(cube.getUVs(direction, 3) + this.atlasData[atlasPosition]);
+		this.uv.Add(cube.getUVs(direction, 0) + this.blockDatabase.blockMaterials[atlasPosition].atlasUVs);
+		this.uv.Add(cube.getUVs(direction, 1) + this.blockDatabase.blockMaterials[atlasPosition].atlasUVs);
+		this.uv.Add(cube.getUVs(direction, 2) + this.blockDatabase.blockMaterials[atlasPosition].atlasUVs);
+		this.uv.Add(cube.getUVs(direction, 3) + this.blockDatabase.blockMaterials[atlasPosition].atlasUVs);
 	}
 
 	private Vector3[] getFaceVertices(int direction, Vector3i position)
@@ -96,11 +88,6 @@ public class MeshArchitect
 		}
 		return result;
 	}
-
-//	private Vector3[] getFaceVertices(int direction)
-//	{
-//		return getFaceVertices(direction, new Vector3i(0, 0, 0));
-//	}
 
 	//returns true if block has a neighbor
 	public bool hasNeighbor(Vector3i position, Vector3i direction)
@@ -114,7 +101,9 @@ public class MeshArchitect
 		{
 			return false;
 		}
-		if (this.blocks [requestedBlock.x, requestedBlock.y, requestedBlock.z].type != 0)
+
+		byte blockType = this.blocks [requestedBlock.x, requestedBlock.y, requestedBlock.z].type;
+		if (!this.blockDatabase.blockMaterials[blockType].transparent)
 		{
 			result = true;
 		}

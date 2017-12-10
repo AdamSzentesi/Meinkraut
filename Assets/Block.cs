@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Block
 {
-	//TODO: this should be a BlockMaterial class
-	public int type = 0;
-	public bool transparent = true;
+	public byte type = 0;
+	public int health = 0;
 
 	public BlockMaterial blockMaterial;
 

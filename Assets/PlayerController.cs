@@ -20,13 +20,13 @@ public class PlayerController : MonoBehaviour
 
 	private Transform transform;
 	private Rigidbody rigidBody;
-	private CapsuleCollider collider;
+//	private CapsuleCollider collider;
 
 	void Start()
 	{
 		this.transform = GetComponent<Transform>();
 		this.rigidBody = GetComponent<Rigidbody>();
-		this.collider = GetComponent<CapsuleCollider>();
+//		this.collider = GetComponent<CapsuleCollider>();
 		this.targetRotation = this.transform.rotation;
 		this.targetVelocity = new Vector3();
 	}

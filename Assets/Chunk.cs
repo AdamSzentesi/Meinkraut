@@ -6,12 +6,13 @@ public class Chunk : MonoBehaviour
 {
 	//Random random = new Random();
 
-	public Vector3i position = new Vector3i(0, 0, 0);
-
+	public Vector3i position = new Vector3i (0, 0, 0);
 	public int size = 4;
 	public float noiseSize = 30.0f;
 	public float biomeHeight = 10f;
-	public Block[,,] blocks;
+	public BlockDatabase blockDatabase;
+
+	private Block[,,] blocks;
 
 	public void initialize()
 	{
@@ -27,14 +28,16 @@ public class Chunk : MonoBehaviour
 					this.blocks [x, y, z] = new Block();
 					if (y < terrainHeight)
 					{
-						this.blocks [x, y, z].type = getType(x + this.position.x, y + this.position.y, z + this.position.z);
-						this.blocks [x, y, z].transparent = false;
+						byte blockType = getType (x + this.position.x, y + this.position.y, z + this.position.z);
+						this.blocks [x, y, z].type = blockType;
+						this.blocks [x, y, z].health = this.blockDatabase.blockMaterials [blockType].hardness;
 					}
 				}
 			}
 		}
 
-		MeshArchitect meshArchitect = new MeshArchitect(this.size, this.blocks);
+		MeshArchitect meshArchitect = new MeshArchitect(this.size, this.blocks, this.blockDatabase);
+		GetComponent<MeshRenderer> ().material = this.blockDatabase.materialAtlas;
 		updateMesh (meshArchitect);
 	}
 
@@ -46,7 +49,7 @@ public class Chunk : MonoBehaviour
 		return result;
 	}
 
-	private int getType(int x, int y, int z)
+	private byte getType(int x, int y, int z)
 	{
 		//int result = (Random.Range (0, 5) + 1);
 
@@ -54,7 +57,7 @@ public class Chunk : MonoBehaviour
 		noise += Mathf.PerlinNoise (x / this.noiseSize + 123456, y / this.noiseSize + 987654);
 		//noise += Mathf.PerlinNoise (y / this.noiseSize + 987654, z / this.noiseSize + 123456);
 
-		return (int)(noise/2 * 5) + 1;
+		return (byte)((noise/2 * 5) + 1);
 	}
 
 	private void updateMesh(MeshArchitect meshArchitect)
@@ -67,8 +70,6 @@ public class Chunk : MonoBehaviour
 
 		MeshFilter meshFilter = GetComponent<MeshFilter> ();
 		meshFilter.mesh = mesh;
-
-		GetComponent<MeshRenderer> ().material = Resources.Load ("Materials/block") as Material;
 	}
 
 	public List<Vector3i> getColliderVoxels(Vector3 playerPosition, int colliderDistance)
@@ -107,11 +108,11 @@ public class Chunk : MonoBehaviour
 							for (int y = 0; y < (endY - startY); y++)
 							{
 								Vector3i finalPosition = new Vector3i(x + startX, y + startY, z + startZ);
-								if(this.blocks[finalPosition.x, finalPosition.y, finalPosition.z].type > 0 && !this.blocks[finalPosition.x, finalPosition.y, finalPosition.z].isInside)
+								byte blockType = this.blocks [finalPosition.x, finalPosition.y, finalPosition.z].type;
+								if(this.blockDatabase.blockMaterials[blockType].collider && !this.blocks[finalPosition.x, finalPosition.y, finalPosition.z].isInside)
 								{
 									result.Add (finalPosition);
 								}
-
 							}
 						}
 					}
@@ -137,25 +138,33 @@ public class Chunk : MonoBehaviour
 		return false;
 	}
 
-	public int dig(Vector3i worldPosition)
+	public DigData dig(Vector3i worldPosition, int damage)
 	{
-		return place (worldPosition, 0);
+		DigData result = new DigData ();
+		Vector3i localPosition = getLocalPosition(worldPosition);
+		Block diggedBlock = this.blocks [localPosition.x, localPosition.y, localPosition.z];
+		diggedBlock.health -= damage;
+		if (diggedBlock.health <= 0)
+		{
+			result.digSuccess = true;
+			result.diggedBlockType = place (worldPosition, 0);
+		}
+		return result;
 	}
 
-	public int place(Vector3i worldPosition, int blockType)
+	public byte place(Vector3i worldPosition, byte placedBlockType)
 	{
-		Vector3i localPosition = worldPosition.subtract(this.position);
-		int diggedBlock = this.blocks[localPosition.x, localPosition.y, localPosition.z].type;
-
-		this.blocks [localPosition.x, localPosition.y, localPosition.z].type = blockType;
-		this.blocks [localPosition.x, localPosition.y, localPosition.z].transparent = true;
-		MeshArchitect meshArchitect = new MeshArchitect(this.size, this.blocks);
+		Vector3i localPosition = getLocalPosition(worldPosition);
+		byte diggedBlockType = this.blocks[localPosition.x, localPosition.y, localPosition.z].type;
+		this.blocks [localPosition.x, localPosition.y, localPosition.z].type = placedBlockType;
+		MeshArchitect meshArchitect = new MeshArchitect(this.size, this.blocks, this.blockDatabase);
 		updateMesh (meshArchitect);
-		//print (localPosition.x + "," + localPosition.y + "," + localPosition.z);
-
-		print (diggedBlock);
-		return diggedBlock;
+		return diggedBlockType;
 	}
 
-
+	private Vector3i getLocalPosition(Vector3i worldPosition)
+	{
+		return worldPosition.subtract (this.position);
+	}
+	
 }
