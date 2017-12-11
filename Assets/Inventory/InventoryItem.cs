@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryItem : MonoBehaviour
+public class InventoryItem
 {
 	public Sprite sprite;
 	public byte type;
-
-	void Start(){}
-	void Update(){}
 }

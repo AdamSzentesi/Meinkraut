@@ -8,7 +8,7 @@ public class World : MonoBehaviour
 	private Transform playerTransform;
 	private Vector3i playerChunkPosition;
 
-	private int viewDistance = 4;
+	private int viewDistance = 1;
 	private int chunkSize = 16;
 	private GameObject[,] chunks;
 	private Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks;

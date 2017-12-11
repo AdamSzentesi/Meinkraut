@@ -7,6 +7,7 @@ public class InventoryRenderer : MonoBehaviour
 {
 	public GameObject slotImageTemplate;
 	public GameObject slotSelectedTemplate;
+	public Sprite emptySprite;
 
 	private bool initialized = false;
 	private int initTimer = 2;
@@ -44,7 +45,10 @@ public class InventoryRenderer : MonoBehaviour
 
 	public void setSprite(int slotId, Sprite sprite)
 	{
-		//this.slotImages[slotId].GetComponent<Image>().sprite = sprite;
+		if (sprite == null)
+		{
+			sprite = this.emptySprite;
+		}
 		this.slotImages[slotId].GetComponent<InventorySlotUpdateText>().image.sprite = sprite;
 	}
 

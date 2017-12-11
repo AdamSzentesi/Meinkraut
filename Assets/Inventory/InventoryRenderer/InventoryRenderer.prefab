@@ -45,6 +45,7 @@ MonoBehaviour:
     type: 2}
   slotSelectedTemplate: {fileID: 1520599879564570, guid: 4e84b75bcd976c54e86c77a3fb675ea2,
     type: 2}
+  emptySprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114699654050634652
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -65,7 +66,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

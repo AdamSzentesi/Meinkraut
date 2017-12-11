@@ -47,16 +47,14 @@ public class PlayerAction : MonoBehaviour
 		{
 			if (this.lastCharge <= 0)
 			{
-				Vector3i target = this.cameraControl.getTarget (false); //get tool info!!!§
+				Vector3i target = this.cameraControl.getTarget (false);
 				if (target != null)
 				{
 					byte diggedBlockType = this.world.dig (target, this.damage);
 					this.GetComponent<AudioSource> ().Play();
 					if (diggedBlockType > 0)
 					{
-						GameObject gameObject = new GameObject ();
-						gameObject.AddComponent<InventoryItem> ().type = diggedBlockType;
-						InventoryItem newItem = gameObject.GetComponent<InventoryItem> ();
+						InventoryItem newItem = new InventoryItem();
 						newItem.type = diggedBlockType;
 						newItem.sprite = this.world.blockDatabase.blockMaterials[diggedBlockType].inventorySprite;
 						addItem (newItem);

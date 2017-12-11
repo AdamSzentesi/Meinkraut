@@ -41,13 +41,9 @@ public class Inventory : MonoBehaviour
 
 	public InventoryItem getItem()
 	{
-//		if (this.slots [this.activeSlot].count > 0)
-//		{
-//			//this.slots [this.activeSlot].removeItem ();
-//			return this.slots[this.activeSlot].getItem();
-//		}
 		InventoryItem result = this.slots[this.activeSlot].getItem();
 		this.invRenderer.updateCounter(this.activeSlot, this.slots[this.activeSlot].count);
+		this.invRenderer.setSprite(this.activeSlot, this.slots[this.activeSlot].sprite);
 		return result;
 	}
 
@@ -56,7 +52,7 @@ public class Inventory : MonoBehaviour
 		for(int i = 0; i < this.slots.Length; i++)
 		{
 			InventorySlot inventorySlot = this.slots [i];
-			if (inventorySlot.count != 0 && inventorySlot.itemType == inventoryItem.type)
+			if (inventorySlot.count != 0 && inventorySlot.inventoryItem.type == inventoryItem.type)
 			{
 				inventorySlot.addItem (inventoryItem);
 				this.invRenderer.updateCounter(i, inventorySlot.count);

@@ -22,10 +22,23 @@ public class CameraControl : MonoBehaviour
 		transform.rotation *= Quaternion.AngleAxis (pitchInput * Time.deltaTime * angularVelocity, Vector3.right);
 
 		//target display
-		Vector3i target = getTarget(true);
-		if (target != null)
+		Vector3i target = getTarget(false);
+		if (target != null) {
+			this.debugObject.transform.position = target.floatify ();
+
+			//TODO: OPTIMIZE!!!!
+			Vector3i target2 = getTarget(true);
+			Vector3 finalTarget = target2.subtract (target).floatify();
+			//this.debugObject.transform.rotation = Quaternion.LookRotation(finalTarget);
+			//this.debugObject.transform.rotation = Quaternion.Euler(target.floatify());
+			//Vector3 finalTarget2 = new Vector3(finalTarget.z, finalTarget.y, -finalTarget.x);
+			//Vector3 finalTarget2 = new Vector3(0.2f, 0, 0);
+			this.debugObject.transform.rotation = Quaternion.LookRotation(finalTarget);
+			this.debugObject.SetActive (true);
+		}
+		else
 		{
-			this.debugObject.transform.position = target.floatify();
+			this.debugObject.SetActive (false);
 		}
 
 	}
