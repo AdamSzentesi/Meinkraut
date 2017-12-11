@@ -25,8 +25,8 @@ public class PlayerAction : MonoBehaviour
 
 	void Update()
 	{
-		this.digInput = Input.GetAxis("Fire1");
-		this.placeInput = Input.GetAxis("Fire2");
+		this.digInput = Input.GetAxis("Dig");
+		this.placeInput = Input.GetAxis("Place");
 
 		if (Input.GetKeyDown (KeyCode.Q)){this.inventory.previousItem();}
 		if (Input.GetKeyDown (KeyCode.E)){this.inventory.nextItem();}

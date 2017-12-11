@@ -29,12 +29,14 @@ public class PlayerController : MonoBehaviour
 //		this.collider = GetComponent<CapsuleCollider>();
 		this.targetRotation = this.transform.rotation;
 		this.targetVelocity = new Vector3();
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
 	}
 	
 	void Update()
 	{
-		this.walkInput = Input.GetAxis("Vertical");
-		this.strafeInput = Input.GetAxis("Horizontal");
+		this.walkInput = Input.GetAxis("Walk");
+		this.strafeInput = Input.GetAxis("Strafe");
 		this.turnInput = Input.GetAxis("Mouse X");
 		this.jumpInput = Input.GetAxis("Jump");
 		turn();
