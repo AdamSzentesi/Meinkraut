@@ -14,21 +14,21 @@ public class Chunk : MonoBehaviour
 
 	private Block[,,] blocks;
 
-	public void initialize()
+	public void initialize(int seed)
 	{
 		this.blocks = new Block[this.size, this.size, this.size];
 		for (int x = 0; x < this.size; x++)
 		{
 			for (int z = 0; z < this.size; z++)
 			{
-				int terrainHeight = getHeight(x + this.position.x, z + this.position.z);
+				int terrainHeight = getHeight(x + this.position.x, z + this.position.z, seed);
 //				terrainHeight = 16;
 				for (int y = 0; y < this.size; y++)
 				{
 					this.blocks [x, y, z] = new Block();
 					if (y < terrainHeight)
 					{
-						byte blockType = getType (x + this.position.x, y + this.position.y, z + this.position.z);
+						byte blockType = getType (x + this.position.x, y + this.position.y, z + this.position.z, seed);
 						this.blocks [x, y, z].type = blockType;
 						this.blocks [x, y, z].health = this.blockDatabase.blockMaterials [blockType].hardness;
 					}
@@ -42,22 +42,31 @@ public class Chunk : MonoBehaviour
 	}
 
 	//TODO: better noise - assymatrical
-	private int getHeight(int x, int y)
+	private int getHeight(int x, int y, int seed)
 	{
 		//int result = (int)(Mathf.PerlinNoise (x / this.noiseSize, y / this.noiseSize) * biomeHeight + size / 2);
-		int result = (int)(Mathf.PerlinNoise (x / this.noiseSize, y / this.noiseSize) * 16 + 2);
+		//int result = (int)(Mathf.PerlinNoise ((float)(seed + x) / (float)this.noiseSize, (float)(seed + y) / (float)this.noiseSize) * 16.0f + 2.0f);
+		int result = (int)((Mathf.PerlinNoise ((float)(seed + x) / (float)this.noiseSize, (float)(seed + y) / (float)this.noiseSize)) * 16 + 2);
 		return result;
 	}
 
-	private byte getType(int x, int y, int z)
+	private byte getType(int x, int y, int z, int seed)
 	{
-		//int result = (Random.Range (0, 5) + 1);
-
-		float noise = Mathf.PerlinNoise (x / this.noiseSize * 2 + 987654, z / this.noiseSize * 2 + 123456);
-		noise += Mathf.PerlinNoise (x / this.noiseSize + 123456, y / this.noiseSize + 987654);
-		//noise += Mathf.PerlinNoise (y / this.noiseSize + 987654, z / this.noiseSize + 123456);
-
-		return (byte)((noise/2 * 5) + 1);
+		switch (y)
+		{
+			case 0:
+			{
+				return 6;
+			}
+			default:
+			{
+				//int result = (Random.Range (0, 5) + 1);
+				float noise = Mathf.PerlinNoise (seed + x / this.noiseSize * 2.0f, seed + z / this.noiseSize * 2.0f + 1000.0f);
+				noise += Mathf.PerlinNoise (seed + x / this.noiseSize + 1000.0f, seed + y / this.noiseSize);
+				//noise += Mathf.PerlinNoise (y / this.noiseSize + 987654, z / this.noiseSize + 123456);
+				return (byte)((noise/2 * 5) + 1);
+			}
+		}
 	}
 
 	private void updateMesh(MeshArchitect meshArchitect)
@@ -157,6 +166,7 @@ public class Chunk : MonoBehaviour
 		Vector3i localPosition = getLocalPosition(worldPosition);
 		byte diggedBlockType = this.blocks[localPosition.x, localPosition.y, localPosition.z].type;
 		this.blocks [localPosition.x, localPosition.y, localPosition.z].type = placedBlockType;
+		this.blocks [localPosition.x, localPosition.y, localPosition.z].health = this.blockDatabase.blockMaterials[placedBlockType].hardness;
 		MeshArchitect meshArchitect = new MeshArchitect(this.size, this.blocks, this.blockDatabase);
 		updateMesh (meshArchitect);
 		return diggedBlockType;

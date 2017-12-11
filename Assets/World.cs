@@ -8,10 +8,11 @@ public class World : MonoBehaviour
 	private Transform playerTransform;
 	private Vector3i playerChunkPosition;
 
-	private int viewDistance = 1;
+	private int viewDistance = 3;
 	private int chunkSize = 16;
 	private GameObject[,] chunks;
 	private Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks;
+	private int seed = 667;
 
 	private int colliderDistance = 4;
 	private GameObject terrainCollider;
@@ -20,6 +21,12 @@ public class World : MonoBehaviour
 
 	void Start ()
 	{
+		GameObject gameData = GameObject.Find ("GameData");
+		if (gameData != null)
+		{
+			this.seed = gameData.GetComponent<GameData>().seed;
+		}
+
 		//player setup
 		this.playerTransform = this.player.GetComponent<Transform> ();
 		this.playerChunkPosition = getChunkPosition (playerTransform.position);
@@ -153,7 +160,7 @@ public class World : MonoBehaviour
 		this.chunks[x, z].GetComponent<Chunk> ().blockDatabase = this.blockDatabase;
 		Vector3 worldPosition = new Vector3 (chunkPosition.x * chunkSize, 0, chunkPosition.z * chunkSize);
 		this.chunks[x, z].transform.SetPositionAndRotation (worldPosition, Quaternion.identity);
-		this.chunks [x, z].GetComponent<Chunk> ().initialize ();
+		this.chunks [x, z].GetComponent<Chunk> ().initialize (this.seed);
 	}
 
 	public byte dig(Vector3i position, int damage)
