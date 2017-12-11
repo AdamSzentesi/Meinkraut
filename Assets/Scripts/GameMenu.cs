@@ -60,11 +60,13 @@ public class GameMenu : MonoBehaviour
 		saveData.playerPositionX = 1.0f;
 		saveData.playerPositionY = 2.0f;
 		saveData.playerPositionZ = 3.0f;
-		saveData.changedBlocks = this.world.changedBlocks;
+		//saveData.changedBlocks = this.world.changedBlocks;
+		saveData.setChangedBlocks (this.world.changedBlocks);
 
+		//print ("SAVING");
 		formatter.Serialize (file, saveData);
 		file.Close ();
-		print ("SAVED OK");
+		toggle ();
 	}
 
 	public void quit()

@@ -14,22 +14,26 @@ public class Chunk : MonoBehaviour
 
 	private Block[,,] blocks;
 
-	public void initialize(int seed)
+	public void initialize(World world)
 	{
 		this.blocks = new Block[this.size, this.size, this.size];
 		for (int x = 0; x < this.size; x++)
 		{
 			for (int z = 0; z < this.size; z++)
 			{
-				int terrainHeight = getHeight(x + this.position.x, z + this.position.z, seed);
+				int terrainHeight = getHeight(x + this.position.x, z + this.position.z, world.seed);
 //				terrainHeight = 16;
 				for (int y = 0; y < this.size; y++)
 				{
 					this.blocks [x, y, z] = new Block();
 					if (y < terrainHeight)
 					{
-						byte blockType = getType (x + this.position.x, y + this.position.y, z + this.position.z, seed);
-						this.blocks [x, y, z].type = blockType;
+						byte blockType;
+						if (!world.getChangedBlock (new Vector3i(this.position.x, this.position.y, this.position.z), new Vector3i(x, y, z), out blockType))
+						{
+							blockType = getType (x + this.position.x, y + this.position.y, z + this.position.z, world.seed);
+							this.blocks [x, y, z].type = blockType;
+						}
 						this.blocks [x, y, z].health = this.blockDatabase.blockMaterials [blockType].hardness;
 					}
 				}

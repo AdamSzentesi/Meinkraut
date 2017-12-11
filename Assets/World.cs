@@ -8,7 +8,7 @@ public class World : MonoBehaviour
 	private Transform playerTransform;
 	private Vector3i playerChunkPosition;
 
-	private int viewDistance = 6;
+	private int viewDistance = 1;
 	private int chunkSize = 16;
 	private GameObject[,] chunks;
 	public Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks;
@@ -26,7 +26,7 @@ public class World : MonoBehaviour
 		{
 			SaveData saveData = gameData.GetComponent<GameData> ().saveData;
 			this.seed = saveData.worldSeed;
-			this.changedBlocks = saveData.changedBlocks;
+			this.changedBlocks = saveData.getChangedBlocks();
 		}
 
 		//player setup
@@ -162,7 +162,7 @@ public class World : MonoBehaviour
 		this.chunks[x, z].GetComponent<Chunk> ().blockDatabase = this.blockDatabase;
 		Vector3 worldPosition = new Vector3 (chunkPosition.x * chunkSize, 0, chunkPosition.z * chunkSize);
 		this.chunks[x, z].transform.SetPositionAndRotation (worldPosition, Quaternion.identity);
-		this.chunks [x, z].GetComponent<Chunk> ().initialize (this.seed);
+		this.chunks [x, z].GetComponent<Chunk> ().initialize (this);
 	}
 
 	public byte dig(Vector3i position, int damage)
@@ -235,6 +235,13 @@ public class World : MonoBehaviour
 //			}
 //		}
 
+	}
+
+	public bool getChangedBlock(Vector3i chunkPosition, Vector3i blockPosition, out byte changedType)
+	{
+		//print ("Cpos: " + chunkPosition.x + "," + chunkPosition.y + "," + chunkPosition.z);
+		changedType = 0;
+		return false;
 	}
 
 }
