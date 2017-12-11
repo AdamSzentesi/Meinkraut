@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class BlockMaterial : MonoBehaviour
 {
-	//public int id;
-
+	public string name;
 	public bool transparent;
 	public bool collider;
 	public byte hardness;

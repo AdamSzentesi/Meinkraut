@@ -264,8 +264,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: Play
+      - m_Target: {fileID: 752067155}
+        m_MethodName: save
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -844,6 +844,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu: {fileID: 1896667188}
+  world: {fileID: 369210427}
 --- !u!1 &965157182
 GameObject:
   m_ObjectHideFlags: 0
@@ -1342,7 +1343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   invRenderer: {fileID: 49668246}
-  slotCount: 5
+  blockDatabase: {fileID: 1616089887}
   activeSlot: 0
 --- !u!82 &1726003135
 AudioSource:

@@ -5,15 +5,17 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
 	public InventoryRenderer invRenderer;
-	public int slotCount = 4;
+	public BlockDatabase blockDatabase;
 	public int activeSlot = 0;
 
+	private int slotCount;
 	private List<InventoryItem> items = new List<InventoryItem>();
 	private InventorySlot[] slots;
 
 
 	void Awake()
 	{
+		this.slotCount = this.blockDatabase.getDiggable();
 		this.invRenderer.init (this.slotCount);
 	}
 

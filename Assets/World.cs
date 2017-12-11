@@ -8,11 +8,11 @@ public class World : MonoBehaviour
 	private Transform playerTransform;
 	private Vector3i playerChunkPosition;
 
-	private int viewDistance = 3;
+	private int viewDistance = 6;
 	private int chunkSize = 16;
 	private GameObject[,] chunks;
-	private Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks;
-	private int seed = 667;
+	public Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks;
+	public int seed = 667;
 
 	private int colliderDistance = 4;
 	private GameObject terrainCollider;
@@ -24,7 +24,9 @@ public class World : MonoBehaviour
 		GameObject gameData = GameObject.Find ("GameData");
 		if (gameData != null)
 		{
-			this.seed = gameData.GetComponent<GameData>().seed;
+			SaveData saveData = gameData.GetComponent<GameData> ().saveData;
+			this.seed = saveData.worldSeed;
+			this.changedBlocks = saveData.changedBlocks;
 		}
 
 		//player setup

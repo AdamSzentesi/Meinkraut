@@ -92,6 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f500f682a4279f4fb6e634c035fb273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name: Kimchi
   transparent: 0
   collider: 1
   hardness: 4

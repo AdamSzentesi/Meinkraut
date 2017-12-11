@@ -92,6 +92,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f500f682a4279f4fb6e634c035fb273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name: Air
   transparent: 1
+  collider: 0
   hardness: 0
   atlasUVs: {x: 0, y: 0}
+  inventorySprite: {fileID: 0}

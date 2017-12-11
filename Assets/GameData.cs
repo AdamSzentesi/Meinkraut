@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
-	public int seed;
+	public SaveData saveData;
 
 	void Awake()
 	{
 		DontDestroyOnLoad (transform.gameObject);
+	}
+
+	public void clean()
+	{
+		this.saveData.clean ();
 	}
 }

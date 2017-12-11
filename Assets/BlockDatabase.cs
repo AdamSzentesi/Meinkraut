@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class BlockDatabase : MonoBehaviour
 {
-	public static byte AIR = 0;
-	public static byte GREEN = 1;
-	public static byte PURPLE = 2;
-	public static byte SAUER = 3;
-	public static byte KIMCHI = 4;
-
 	public Material materialAtlas;
 	public List<BlockMaterial> blockMaterials = new List<BlockMaterial>();
 
+	public int getDiggable()
+	{
+		int result = 0;
+		foreach (BlockMaterial blockMaterial in this.blockMaterials)
+		{
+			if (blockMaterial.collider == true && blockMaterial.inventorySprite != null)
+			{
+				result++;
+			}
+		}
+		return result;
+	}
 }
