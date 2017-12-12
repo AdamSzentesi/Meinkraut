@@ -21,12 +21,12 @@ public class GameMenu : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Escape))
 		{
-			toggle ();
+			Toggle ();
 		}
 
 	}
 
-	private void toggle()
+	private void Toggle()
 	{
 		if (this.menu.activeInHierarchy == false)
 		{
@@ -45,7 +45,7 @@ public class GameMenu : MonoBehaviour
 		}
 	}
 
-	public void save()
+	public void Save()
 	{
 		if (!Directory.Exists (this.savePath))
 		{
@@ -56,20 +56,19 @@ public class GameMenu : MonoBehaviour
 		FileStream file = File.Create (this.savePath + "/ahoj.kraut");
 
 		SaveData saveData = new SaveData ();
-		saveData.worldSeed = this.world.getWorldSeed();
-		saveData.playerPositionX = 1.0f;
-		saveData.playerPositionY = 2.0f;
-		saveData.playerPositionZ = 3.0f;
-		//saveData.changedBlocks = this.world.changedBlocks;
-		saveData.setChangedBlocks (this.world.changedBlocks);
+		saveData.worldSeed = this.world.GetWorldSeed();
+		saveData.playerPositionX = this.world.player.transform.position.x;
+		saveData.playerPositionY = this.world.player.transform.position.y;
+		saveData.playerPositionZ = this.world.player.transform.position.z;
+		saveData.SetChangedBlocks (this.world.changedBlocks);
 
 		//print ("SAVING");
 		formatter.Serialize (file, saveData);
 		file.Close ();
-		toggle ();
+		Toggle ();
 	}
 
-	public void quit()
+	public void Quit()
 	{
 		Application.Quit ();
 	}

@@ -15,8 +15,8 @@ public class Inventory : MonoBehaviour
 
 	void Awake()
 	{
-		this.slotCount = this.blockDatabase.getDiggable();
-		this.invRenderer.init (this.slotCount);
+		this.slotCount = this.blockDatabase.GetDiggable();
+		this.invRenderer.Init (this.slotCount);
 	}
 
 	void Start()
@@ -28,12 +28,12 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
-	public bool addItem(InventoryItem inventoryItem)
+	public bool AddItem(InventoryItem inventoryItem)
 	{
 		bool result = true;
-		if (!addToStack (inventoryItem))
+		if (!AddToStack (inventoryItem))
 		{
-			if (!addNew (inventoryItem))
+			if (!AddNew (inventoryItem))
 			{
 				result = false;
 			}
@@ -41,72 +41,72 @@ public class Inventory : MonoBehaviour
 		return result;
 	}
 
-	public InventoryItem getItem()
+	public InventoryItem GetItem()
 	{
-		InventoryItem result = this.slots[this.activeSlot].getItem();
-		this.invRenderer.updateCounter(this.activeSlot, this.slots[this.activeSlot].count);
-		this.invRenderer.setSprite(this.activeSlot, this.slots[this.activeSlot].sprite);
+		InventoryItem result = this.slots[this.activeSlot].GetItem();
+		this.invRenderer.UpdateCounter(this.activeSlot, this.slots[this.activeSlot].count);
+		this.invRenderer.SetSprite(this.activeSlot, this.slots[this.activeSlot].sprite);
 		return result;
 	}
 
-	private bool addToStack(InventoryItem inventoryItem)
+	private bool AddToStack(InventoryItem inventoryItem)
 	{
 		for(int i = 0; i < this.slots.Length; i++)
 		{
 			InventorySlot inventorySlot = this.slots [i];
 			if (inventorySlot.count != 0 && inventorySlot.inventoryItem.type == inventoryItem.type)
 			{
-				inventorySlot.addItem (inventoryItem);
-				this.invRenderer.updateCounter(i, inventorySlot.count);
+				inventorySlot.AddItem (inventoryItem);
+				this.invRenderer.UpdateCounter(i, inventorySlot.count);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private bool addNew(InventoryItem inventoryItem)
+	private bool AddNew(InventoryItem inventoryItem)
 	{
 		for(int i = 0; i < this.slots.Length; i++)
 		{
 			InventorySlot inventorySlot = this.slots [i];
 			if (inventorySlot.count == 0)
 			{
-				inventorySlot.addItem (inventoryItem);
-				this.invRenderer.updateCounter(i, inventorySlot.count);
-				this.invRenderer.setSprite (i, inventoryItem.sprite);
+				inventorySlot.AddItem (inventoryItem);
+				this.invRenderer.UpdateCounter(i, inventorySlot.count);
+				this.invRenderer.SetSprite (i, inventoryItem.sprite);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void nextItem()
+	public void NextItem()
 	{
 		this.activeSlot++;
-		clamp ();
-		updateSelected ();
+		Clamp ();
+		UpdateSelected ();
 	}
 
-	public void previousItem()
+	public void PreviousItem()
 	{
 		this.activeSlot--;
-		clamp ();
-		updateSelected ();
+		Clamp ();
+		UpdateSelected ();
 	}
 
-	public void selectItem(int item)
+	public void SelectItem(int item)
 	{
 		this.activeSlot = item;
-		clamp ();
-		updateSelected ();
+		Clamp ();
+		UpdateSelected ();
 	}
 
-	private void updateSelected()
+	private void UpdateSelected()
 	{
-		this.invRenderer.updateSelected (this.activeSlot);
+		this.invRenderer.UpdateSelected (this.activeSlot);
 	}
 
-	private void clamp()
+	private void Clamp()
 	{
 		if (this.activeSlot >= this.slots.Length)
 		{

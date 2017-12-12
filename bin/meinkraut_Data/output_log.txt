@@ -15,20 +15,20 @@ Platform assembly: C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\meinkraut_D
 Loading C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\meinkraut_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\meinkraut_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\meinkraut_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-- Completed reload, in  0.028 seconds
+- Completed reload, in  0.026 seconds
 Platform assembly: C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\meinkraut_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\Tavokrapen\Documents\Unity\Minekraut\bin\meinkraut_Data\Managed\System.dll (this message is harmless)
 desktop: 1280x1024 60Hz; virtual: 1280x1024 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.498430 ms
+UnloadTime: 1.806737 ms
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 2738 -> priority: 1 
-  Thread -> id: 37b4 -> priority: 1 
+  Thread -> id: b8c -> priority: 1 
+  Thread -> id: 2218 -> priority: 1 
 Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 7.178919 ms
+UnloadTime: 7.552911 ms
 
 Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 507.
-Total: 0.560371 ms (FindLiveObjects: 0.058295 ms CreateObjectMapping: 0.032021 ms MarkObjects: 0.450760 ms  DeleteObjects: 0.018063 ms)
+Total: 0.425307 ms (FindLiveObjects: 0.058295 ms CreateObjectMapping: 0.025042 ms MarkObjects: 0.325959 ms  DeleteObjects: 0.015189 ms)
 

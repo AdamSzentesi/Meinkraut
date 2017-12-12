@@ -15,7 +15,7 @@ public class InventoryRenderer : MonoBehaviour
 	private GameObject[] slotImages;
 	private GameObject slotSelected;
 
-	public void init(int slotCount)
+	public void Init(int slotCount)
 	{
 		if (!this.initialized)
 		{
@@ -43,7 +43,7 @@ public class InventoryRenderer : MonoBehaviour
 		}
 	}
 
-	public void setSprite(int slotId, Sprite sprite)
+	public void SetSprite(int slotId, Sprite sprite)
 	{
 		if (sprite == null)
 		{
@@ -52,12 +52,12 @@ public class InventoryRenderer : MonoBehaviour
 		this.slotImages[slotId].GetComponent<InventorySlotUpdateText>().image.sprite = sprite;
 	}
 
-	public void updateCounter(int slotId, int count)
+	public void UpdateCounter(int slotId, int count)
 	{
 		this.slotImages[slotId].GetComponent<InventorySlotUpdateText>().updateText(count.ToString());
 	}
 
-	public void updateSelected(int slotId)
+	public void UpdateSelected(int slotId)
 	{
 		this.slotSelected.transform.position = this.slotImages [slotId].transform.position;
 	}

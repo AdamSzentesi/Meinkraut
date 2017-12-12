@@ -13,7 +13,7 @@ public class InventorySlot
 		this.count = 0;
 	}
 
-	public void addItem(InventoryItem inventoryItem)
+	public void AddItem(InventoryItem inventoryItem)
 	{
 		if (this.count == 0)
 		{
@@ -23,7 +23,7 @@ public class InventorySlot
 		this.count++;
 	}
 
-	public InventoryItem getItem()
+	public InventoryItem GetItem()
 	{
 		InventoryItem result = null;
 		if (this.count > 0)
