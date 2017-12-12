@@ -13,7 +13,7 @@ public class World : MonoBehaviour
 	private Vector3i playerChunkPosition; //players chunk position (chunk units)
 
 	private int seed = 666; //default world seed
-	private int viewDistance = 4; //Moore neighborhood for chunk generation (chunk units)
+	private int viewDistance = 2; //Moore neighborhood for chunk generation (chunk units)
 	private int chunkSize = 16; //default chunk size (block units)
 	private GameObject[,] chunks;
 	public Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks = new Dictionary<Vector3i, Dictionary<Vector3i, byte>>(); //DB of changed blocks: saving, loading and redrawing
@@ -131,7 +131,7 @@ public class World : MonoBehaviour
 		}
 	}
 
-
+	//returns position in chunk units
 	private Vector3i GetChunkPosition(Vector3 position)
 	{
 		Vector3i result = new Vector3i ();
@@ -141,12 +141,13 @@ public class World : MonoBehaviour
 		return result;
 	}
 
+	//scrolls the terrain if necessary
 	private void ScrollChunks(int amount, string axis) //+-2
 	{
 		int signum = (int)Mathf.Sign (amount);
 		switch (signum)
 		{
-			case 1:
+			case 1: //positiove axis
 			{
 				int endMax = this.chunks.GetLength (0); //5
 				int endMin = 0 + amount; //2
@@ -160,7 +161,7 @@ public class World : MonoBehaviour
 				for (int i = (endMax - endMin); i < endMax; i++){CreateChunks (i, axis, amount);}
 				break;
 			}
-			case -1:
+			case -1: //negative axis
 			{
 				int endMax = this.chunks.GetLength (0); //5
 				int startMin = 0; //0
@@ -178,6 +179,7 @@ public class World : MonoBehaviour
 		}
 	}
 
+	//create chunks on certain position of axis
 	private void CreateChunks(int axisRow, string axis, int amount)
 	{
 		for (int j = 0; j < this.chunks.GetLength (0); j++)
@@ -198,7 +200,7 @@ public class World : MonoBehaviour
 		}
 	}
 
-
+	//destroys chunks on certain position of axis
 	private void DestroyChunks(int axisRow, string axis)
 	{
 		for (int j = 0; j < this.chunks.GetLength (0); j++)
@@ -219,6 +221,7 @@ public class World : MonoBehaviour
 		}
 	}
 
+	//moves chunks to certain position in array
 	private void MoveChunks(int axisRow, string axis, int amount)
 	{
 		for (int j = 0; j < this.chunks.GetLength (0); j++)
