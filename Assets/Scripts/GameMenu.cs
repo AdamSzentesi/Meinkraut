@@ -56,7 +56,7 @@ public class GameMenu : MonoBehaviour
 		FileStream file = File.Create (this.savePath + "/ahoj.kraut");
 
 		SaveData saveData = new SaveData ();
-		saveData.worldSeed = this.world.seed;
+		saveData.worldSeed = this.world.getWorldSeed();
 		saveData.playerPositionX = 1.0f;
 		saveData.playerPositionY = 2.0f;
 		saveData.playerPositionZ = 3.0f;

@@ -4,38 +4,49 @@ using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
-	//Random random = new Random();
-
-	public Vector3i position = new Vector3i (0, 0, 0);
-	public int size = 4;
+	public Vector3i position;
+	public Vector3i worldPosition;
+	public int size;
 	public float noiseSize = 30.0f;
 	public float biomeHeight = 10f;
 	public BlockDatabase blockDatabase;
 
 	private Block[,,] blocks;
 
-	public void initialize(World world)
+	public void initialize(Vector3i position, World world)
 	{
+		this.position = position;
+		this.size = world.getChunkSize();
+		this.blockDatabase = world.blockDatabase;
+
+		this.worldPosition = position.multiply (this.size);
 		this.blocks = new Block[this.size, this.size, this.size];
+
+		Dictionary<Vector3i, byte> blocks;
+		bool hasChanges = world.hasChunkChanges (this.position, out blocks);
 		for (int x = 0; x < this.size; x++)
 		{
 			for (int z = 0; z < this.size; z++)
 			{
-				int terrainHeight = getHeight(x + this.position.x, z + this.position.z, world.seed);
-//				terrainHeight = 16;
+				int terrainHeight = getHeight(x + this.worldPosition.x, z + this.worldPosition.z, world.getWorldSeed());
 				for (int y = 0; y < this.size; y++)
 				{
+					byte blockType;
 					this.blocks [x, y, z] = new Block();
-					if (y < terrainHeight)
+					if (hasChanges && blocks.TryGetValue (new Vector3i (x, y, z), out blockType))
 					{
-						byte blockType;
-						if (!world.getChangedBlock (new Vector3i(this.position.x, this.position.y, this.position.z), new Vector3i(x, y, z), out blockType))
-						{
-							blockType = getType (x + this.position.x, y + this.position.y, z + this.position.z, world.seed);
-							this.blocks [x, y, z].type = blockType;
-						}
-						this.blocks [x, y, z].health = this.blockDatabase.blockMaterials [blockType].hardness;
+						//print ("OK");
 					}
+					else
+					{
+						blockType = 0;
+						if (y < terrainHeight)
+						{
+							blockType = getType (x + this.worldPosition.x, y + this.worldPosition.y, z + this.worldPosition.z, world.getWorldSeed ());
+						}
+					}
+					this.blocks [x, y, z].type = blockType;
+					this.blocks [x, y, z].health = this.blockDatabase.blockMaterials [blockType].hardness;
 				}
 			}
 		}
@@ -90,7 +101,7 @@ public class Chunk : MonoBehaviour
 		List<Vector3i> result = new List<Vector3i>();
 
 		Vector3i intPlayerPosition = new Vector3i ((int)playerPosition.x, (int)playerPosition.y, (int)playerPosition.z);
-		intPlayerPosition = intPlayerPosition.subtract (this.position);
+		intPlayerPosition = intPlayerPosition.subtract (this.worldPosition);
 
 		Vector3i maxDistance = new Vector3i ();
 		Vector3i minDistance = new Vector3i ();
@@ -137,11 +148,11 @@ public class Chunk : MonoBehaviour
 
 	public bool isInside(Vector3i position)
 	{
-		if (position.x >= this.position.x && position.x < (this.position.x + this.size))
+		if (position.x >= this.worldPosition.x && position.x < (this.worldPosition.x + this.size))
 		{
-			if (position.z >= this.position.z && position.z < (this.position.z + this.size))
+			if (position.z >= this.worldPosition.z && position.z < (this.worldPosition.z + this.size))
 			{
-				if (position.y >= this.position.y && position.y < (this.position.y + this.size))
+				if (position.y >= this.worldPosition.y && position.y < (this.worldPosition.y + this.size))
 				{
 					//print(this.position.x + "," + this.position.y + "," + this.position.z + " IS IN");
 					return true;
@@ -159,26 +170,29 @@ public class Chunk : MonoBehaviour
 		diggedBlock.health -= damage;
 		if (diggedBlock.health <= 0)
 		{
-			result.digSuccess = true;
-			result.diggedBlockType = place (worldPosition, 0);
+			result = place(worldPosition, 0);
 		}
 		return result;
 	}
 
-	public byte place(Vector3i worldPosition, byte placedBlockType)
+	public DigData place(Vector3i worldPosition, byte placedBlockType)
 	{
+		DigData result = new DigData ();
 		Vector3i localPosition = getLocalPosition(worldPosition);
 		byte diggedBlockType = this.blocks[localPosition.x, localPosition.y, localPosition.z].type;
 		this.blocks [localPosition.x, localPosition.y, localPosition.z].type = placedBlockType;
 		this.blocks [localPosition.x, localPosition.y, localPosition.z].health = this.blockDatabase.blockMaterials[placedBlockType].hardness;
 		MeshArchitect meshArchitect = new MeshArchitect(this.size, this.blocks, this.blockDatabase);
 		updateMesh (meshArchitect);
-		return diggedBlockType;
+		result.success = true;
+		result.diggedBlockType = diggedBlockType;
+		result.localPosition = localPosition;
+		return result;
 	}
 
 	private Vector3i getLocalPosition(Vector3i worldPosition)
 	{
-		return worldPosition.subtract (this.position);
+		return worldPosition.subtract (this.worldPosition);
 	}
 	
 }

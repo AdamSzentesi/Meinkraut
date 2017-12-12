@@ -13,6 +13,7 @@ public class GameData : MonoBehaviour
 
 	public void clean()
 	{
-		this.saveData.clean ();
+		this.saveData = new SaveData ();
+		//this.saveData.clean ();
 	}
 }

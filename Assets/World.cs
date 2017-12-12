@@ -6,62 +6,65 @@ public class World : MonoBehaviour
 {
 	public GameObject player;
 	private Transform playerTransform;
-	private Vector3i playerChunkPosition;
+	private Vector3i playerChunkPosition; //players chunk position (chunk units)
 
-	private int viewDistance = 1;
-	private int chunkSize = 16;
+	private int seed = 666; //default world seed
+	private int viewDistance = 5; //Moore neighborhood for chunk generation (chunk units)
+	private int chunkSize = 16; //default chunk size (block units)
 	private GameObject[,] chunks;
-	public Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks;
-	public int seed = 667;
+	public Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks = new Dictionary<Vector3i, Dictionary<Vector3i, byte>>(); //DB of changed blocks: saving, loading and redrawing
+	public BlockDatabase blockDatabase; //DB of block templates
 
-	private int colliderDistance = 4;
+	private int colliderDistance = 4; //Moor neigh. for collider spawning (block units)
 	private GameObject terrainCollider;
 	private List<GameObject> blockColliders;
-	public BlockDatabase blockDatabase;
 
-	void Start ()
+	void Start()
 	{
-		GameObject gameData = GameObject.Find ("GameData");
-		if (gameData != null)
-		{
-			SaveData saveData = gameData.GetComponent<GameData> ().saveData;
-			this.seed = saveData.worldSeed;
-			this.changedBlocks = saveData.getChangedBlocks();
-		}
-
 		//player setup
 		this.playerTransform = this.player.GetComponent<Transform> ();
-		this.playerChunkPosition = getChunkPosition (playerTransform.position);
+		this.playerChunkPosition = new Vector3i(0, 0, 0);
 		this.player.GetComponent<PlayerAction> ().setWorld (this);
 
-		this.chunks = new GameObject[this.viewDistance * 2 + 1, this.viewDistance * 2 + 1];
-		this.terrainCollider = new GameObject ();
-		this.terrainCollider.name = "terrainCollider";
-		this.blockColliders = new List<GameObject> ();
-		this.changedBlocks = new Dictionary<Vector3i, Dictionary<Vector3i, byte>> ();
+		//start from menu setup
+		GameObject gameData = GameObject.Find("GameData");
+		if(gameData != null)
+		{
+			SaveData saveData = gameData.GetComponent<GameData>().saveData;
+			this.seed = saveData.worldSeed;
+			this.changedBlocks = saveData.getChangedBlocks();
+			this.playerTransform.position.Set (saveData.playerPositionX, saveData.playerPositionY, saveData.playerPositionZ);
+		}
 
+		//collider setup
+		this.terrainCollider = new GameObject();
+		this.terrainCollider.name = "terrainCollider";
+		this.blockColliders = new List<GameObject>();
+
+		//chunks setup
+		this.chunks = new GameObject[this.viewDistance * 2 + 1, this.viewDistance * 2 + 1];
 		for (int x = 0; x < this.chunks.GetLength(0); x++)
 		{
 			for (int z = 0; z < this.chunks.GetLength(1); z++)
 			{
-				createChunk(x, z);
-				updateColliders (x, z);
+				int chunkPositionX = x - this.viewDistance + playerChunkPosition.x;
+				int chunkPositionZ = z - this.viewDistance + playerChunkPosition.z;
+
+				this.chunks[x, z] = createChunk(chunkPositionX, chunkPositionZ);
+				updateColliders(x, z);
 			}
 		}
-
-		//DDA.getPoints (new Vector3 (-1.32849399f,1.4215488f, 0.0f), new Vector3 (4.13839787f,-2.50394962f, 0.0f));
-		//drawChunks ();
 	}
 
 	void Update()
 	{
-		updateAllColliders ();
+		updateAllColliders();
 
-		Vector3i currentChunkPosition = getChunkPosition (this.playerTransform.position);
+		Vector3i currentChunkPosition = getChunkPosition(this.playerTransform.position);
 
-		if (currentChunkPosition.x != this.playerChunkPosition.x)
+		if(currentChunkPosition.x != this.playerChunkPosition.x)
 		{
-			this.playerChunkPosition.set (currentChunkPosition);
+			this.playerChunkPosition.set(currentChunkPosition);
 			//scrollChunks (this.playerChunkPosition.x - currentChunkPosition.x);
 		}
 
@@ -73,42 +76,59 @@ public class World : MonoBehaviour
 //
 	}
 
+	//create chunk at chunk coordinates
+	private GameObject createChunk(int x, int z)
+	{
+		//print("CREATE " + x + ",0," + z);
+		Vector3i chunkPosition = new Vector3i(x, 0, z);
+
+		GameObject newChunk = new GameObject("Chunk_" + chunkPosition.x + "_" + chunkPosition.y + "_" + chunkPosition.z);
+		newChunk.AddComponent<MeshFilter>();
+		newChunk.AddComponent<MeshRenderer>();
+		newChunk.AddComponent<Chunk>();
+
+		//chunk init
+		newChunk.GetComponent<Chunk>().initialize (chunkPosition, this);
+
+		//place chunk in the Unity world
+		newChunk.transform.SetPositionAndRotation(new Vector3 (x * chunkSize, 0, z * chunkSize), Quaternion.identity);
+
+		return newChunk;
+	}
+
 	//TODO: optimize - no need to clear all and reload!
 	private void updateAllColliders()
 	{
-		clearColliders ();
-
-		for (int x = 0; x < this.chunks.GetLength(0); x++)
-		{
-			for (int z = 0; z < this.chunks.GetLength(1); z++)
-			{
-				updateColliders (x, z);
-			}
-		}
-	}
-
-	private void clearColliders()
-	{
+		//clear colliders
 		for (int i = 0; i < this.blockColliders.Count; i++)
 		{
 			Destroy(this.blockColliders[i]);
 		}
-		this.blockColliders.Clear ();
+		this.blockColliders.Clear();
+		//update colliders
+		for (int x = 0; x < this.chunks.GetLength(0); x++)
+		{
+			for (int z = 0; z < this.chunks.GetLength(1); z++)
+			{
+				updateColliders(x, z);
+			}
+		}
 	}
 
+	//update colliders of certain chunk
 	private void updateColliders(int x, int z)
 	{
 		//add colliders
-		List<Vector3i> colliderVoxels = this.chunks [x, z].GetComponent<Chunk> ().getColliderVoxels(playerTransform.position, this.colliderDistance);
-		Vector3i chunkPosition = this.chunks [x, z].GetComponent<Chunk> ().position;
+		List<Vector3i> colliderVoxels = this.chunks[x, z].GetComponent<Chunk>().getColliderVoxels(playerTransform.position, this.colliderDistance);
+		Vector3i chunkWorldPosition = this.chunks[x, z].GetComponent<Chunk>().worldPosition;
 		for (int i = 0; i < colliderVoxels.Count; i++)
 		{
-			Vector3i blockPosition = colliderVoxels [i];
-			Vector3i worldPosition = blockPosition.add (chunkPosition);
-			GameObject newCollider = new GameObject ();
+			Vector3i blockPosition = colliderVoxels[i];
+			Vector3i worldPosition = blockPosition.add (chunkWorldPosition);
+			GameObject newCollider = new GameObject();
 			this.blockColliders.Add (newCollider);
 			newCollider.name = (x.ToString() + "_" + z.ToString() + "_" + i.ToString());
-			newCollider.AddComponent<BoxCollider> ();
+			newCollider.AddComponent<BoxCollider>();
 			newCollider.transform.position = new Vector3(worldPosition.x, worldPosition.y, worldPosition.z);
 			newCollider.transform.SetParent (this.terrainCollider.transform);
 		}
@@ -130,56 +150,40 @@ public class World : MonoBehaviour
 
 		for (int z = 0; z < max; z++)
 		{
-			Destroy (this.chunks [0, z]);
+			Destroy (this.chunks[0, z]);
 		}
 
 		for (int x = 1; x < max; x++)
 		{
 			for (int z = 0; z < max; z++)
 			{
-				this.chunks [x - 1, z] = this.chunks [x, z];
+				this.chunks [x - 1, z] = this.chunks[x, z];
 			}
 		}
 
 		for (int z = 0; z < max; z++)
 		{
-			createChunk (max - 1, z);
+			//createChunk (max - 1, z);
 		}
 
-	}
-
-	private void createChunk(int x, int z)
-	{
-//		print ("CREATE");
-		Vector3i chunkPosition = new Vector3i (x - this.viewDistance, 0, z - this.viewDistance).add (playerChunkPosition);
-		GameObject newChunk = new GameObject ("Chunk_" + chunkPosition.x + "_" + chunkPosition.z);
-		this.chunks[x, z] = newChunk;
-		this.chunks[x, z].AddComponent<MeshFilter> ();
-		this.chunks[x, z].AddComponent<MeshRenderer> ();
-		this.chunks[x, z].AddComponent<Chunk> ();
-		this.chunks[x, z].GetComponent<Chunk> ().size = this.chunkSize;
-		this.chunks[x, z].GetComponent<Chunk> ().position.set(chunkPosition.x * chunkSize, 0, chunkPosition.z * chunkSize);
-		this.chunks[x, z].GetComponent<Chunk> ().blockDatabase = this.blockDatabase;
-		Vector3 worldPosition = new Vector3 (chunkPosition.x * chunkSize, 0, chunkPosition.z * chunkSize);
-		this.chunks[x, z].transform.SetPositionAndRotation (worldPosition, Quaternion.identity);
-		this.chunks [x, z].GetComponent<Chunk> ().initialize (this);
 	}
 
 	public byte dig(Vector3i position, int damage)
 	{
 		byte diggedBlock = 0;
-		for (int x = 0; x < this.chunks.GetLength(0); x++)
+		for(int x = 0; x < this.chunks.GetLength(0); x++)
 		{
-			for (int z = 0; z < this.chunks.GetLength(1); z++)
+			for(int z = 0; z < this.chunks.GetLength(1); z++)
 			{
-				Chunk chunk = this.chunks[x, z].GetComponent<Chunk> ();
-				bool isInside = chunk.isInside (position);
+				Chunk chunk = this.chunks[x, z].GetComponent<Chunk>();
+				bool isInside = chunk.isInside(position);
 				if (isInside)
 				{
-					DigData result = chunk.dig (position, damage);
-					if (result.digSuccess)
+					DigData result = chunk.dig(position, damage);
+					if(result.success)
 					{
-						addChangedBlock (new Vector3i (x, 0, z), position, result.diggedBlockType);
+						Vector3i chunkPosition = this.chunks [x, z].GetComponent<Chunk> ().position;
+						addChangedBlock(chunkPosition, result.localPosition, 0);
 					}
 					return result.diggedBlockType;
 				}
@@ -194,12 +198,13 @@ public class World : MonoBehaviour
 		{
 			for (int z = 0; z < this.chunks.GetLength(1); z++)
 			{
-				Chunk chunk = this.chunks[x, z].GetComponent<Chunk> ();
-				bool isInside = chunk.isInside (position);
-				if (isInside)
+				Chunk chunk = this.chunks[x, z].GetComponent<Chunk>();
+				bool isInside = chunk.isInside(position);
+				if(isInside)
 				{
-					chunk.place(position, blockType);
-					addChangedBlock (new Vector3i (x, 0, z), position, blockType);
+					DigData result = chunk.place(position, blockType);
+					Vector3i chunkPosition = this.chunks [x, z].GetComponent<Chunk> ().position;
+					addChangedBlock(chunkPosition, result.localPosition, blockType);
 				}
 			}
 		}
@@ -207,22 +212,26 @@ public class World : MonoBehaviour
 
 	private void addChangedBlock(Vector3i chunkPosition, Vector3i blockPosition, byte blockType)
 	{
+//		print("C: " + chunkPosition.x + "," + chunkPosition.y + "," + chunkPosition.z);
+//		print(" B: " + blockPosition.x + "," + blockPosition.y + "," + blockPosition.z);
+//		print("  T: " + blockType);
+
 		Dictionary<Vector3i, byte> savedChunk;
-		this.changedBlocks.TryGetValue (chunkPosition, out savedChunk);
-		if (savedChunk == null)
+		this.changedBlocks.TryGetValue(chunkPosition, out savedChunk);
+		if(savedChunk == null)
 		{
-			this.changedBlocks.Add (chunkPosition, new Dictionary<Vector3i, byte> ());
+			this.changedBlocks.Add(chunkPosition, new Dictionary<Vector3i, byte>());
 		}
 
 		byte savedBlock;
-		this.changedBlocks[chunkPosition].TryGetValue (blockPosition, out savedBlock);
-		if (savedBlock == null)
+		this.changedBlocks[chunkPosition].TryGetValue(blockPosition, out savedBlock);
+		if(savedBlock == null)
 		{
-			this.changedBlocks [chunkPosition].Add (blockPosition, blockType);
+			this.changedBlocks[chunkPosition].Add(blockPosition, blockType);
 		}
 		else
 		{
-			this.changedBlocks [chunkPosition] [blockPosition] = blockType;
+			this.changedBlocks[chunkPosition][blockPosition] = blockType;
 		}
 
 //		foreach (Vector3i key in this.changedBlocks.Keys)
@@ -237,11 +246,24 @@ public class World : MonoBehaviour
 
 	}
 
-	public bool getChangedBlock(Vector3i chunkPosition, Vector3i blockPosition, out byte changedType)
+	public bool hasChunkChanges(Vector3i chunkPosition, out Dictionary<Vector3i, byte> blocks)
 	{
-		//print ("Cpos: " + chunkPosition.x + "," + chunkPosition.y + "," + chunkPosition.z);
-		changedType = 0;
+		//print (chunkPosition.x + "," + chunkPosition.y + "," + chunkPosition.z);
+		if (this.changedBlocks.TryGetValue(chunkPosition, out blocks))
+		{
+			//print ("OK");
+			return true;
+		}
 		return false;
+	}
+
+	public int getChunkSize()
+	{
+		return this.chunkSize;
+	}
+	public int getWorldSeed()
+	{
+		return this.seed;
 	}
 
 }

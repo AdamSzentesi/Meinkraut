@@ -22,7 +22,9 @@ public class MainMenu : MonoBehaviour
 	{
 		this.gameData.clean();
 		this.gameData.saveData.worldSeed = int.Parse(mainMenuSeed.GetComponent<InputField> ().text);
-		this.gameData.GetComponent<GameData>().saveData.worldSeed = int.Parse(mainMenuSeed.GetComponent<InputField> ().text);
+		this.gameData.saveData.playerPositionX = 0;
+		this.gameData.saveData.playerPositionY = 20;
+		this.gameData.saveData.playerPositionZ = 0;
 		SceneManager.LoadScene ("Game");
 	}
 
@@ -40,7 +42,7 @@ public class MainMenu : MonoBehaviour
 		file.Close ();
 
 		this.gameData.saveData = saveData;
-		this.gameData.GetComponent<GameData>().saveData = saveData;
+		//this.gameData.GetComponent<GameData>().saveData = saveData;
 		SceneManager.LoadScene ("Game");
 	}
 

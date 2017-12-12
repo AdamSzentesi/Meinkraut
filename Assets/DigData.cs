@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DigData
 {
-	public bool digSuccess = false;
+	public bool success = false;
 	public byte diggedBlockType = 0;
+	public Vector3i localPosition;
 }

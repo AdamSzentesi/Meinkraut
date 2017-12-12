@@ -8,23 +8,20 @@ public class SaveData
 	public float playerPositionX;
 	public float playerPositionY;
 	public float playerPositionZ;
-	//public Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks;
-
 	public List<Vector3i> chunkPositions = new List<Vector3i>();
 	public List<List<Vector3i>> blockPositions = new List<List<Vector3i>>();
 	public List<List<byte>> blockTypes = new List<List<byte>>();
 
-	public void clean()
-	{
-		this.worldSeed = 0;
-		this.playerPositionX = 0;
-		this.playerPositionY = 0;
-		this.playerPositionZ = 0;
-		this.chunkPositions.Clear ();
-		this.blockPositions.Clear ();
-		this.blockTypes.Clear ();
-		//this.changedBlocks = null;
-	}
+//	public void clean()
+//	{
+//		this.worldSeed = 0;
+//		this.playerPositionX = 0;
+//		this.playerPositionY = 0;
+//		this.playerPositionZ = 0;
+//		this.chunkPositions.Clear ();
+//		this.blockPositions.Clear ();
+//		this.blockTypes.Clear ();
+//	}
 
 	//transform from Dictionary to List data: Dictionaries are not serializable
 	public void setChangedBlocks(Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks)
@@ -58,16 +55,17 @@ public class SaveData
 		{
 			Vector3i chunk = this.chunkPositions [c];
 			result.Add (chunk, new Dictionary<Vector3i, byte>());
-			Debug.Log ("CHUNK: " + chunk.x + "," + chunk.y + "," + chunk.z);
+			//Debug.Log ("CHUNK LOAD: " + chunk.x + "," + chunk.y + "," + chunk.z);
 
 			for (int b = 0; b < this.blockPositions[c].Count; b++)
 			{
 				Vector3i block = this.blockPositions[c][b];
 				byte type = this.blockTypes[c][b];
 				result [chunk].Add (block, type);
-				Debug.Log (" BLOCK: " + block.x + "," + block.y + "," + block.z + " " + type);
+				//Debug.Log (" BLOCK: " + block.x + "," + block.y + "," + block.z + " " + type);
 			}
 		}
 		return result;
 	}
+
 }
