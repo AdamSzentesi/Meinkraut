@@ -9,7 +9,6 @@ public class Inventory : MonoBehaviour
 	public int activeSlot = 0;
 
 	private int slotCount;
-	private List<InventoryItem> items = new List<InventoryItem>();
 	private InventorySlot[] slots;
 
 
@@ -17,10 +16,6 @@ public class Inventory : MonoBehaviour
 	{
 		this.slotCount = this.blockDatabase.GetDiggable();
 		this.invRenderer.Init (this.slotCount);
-	}
-
-	void Start()
-	{
 		this.slots = new InventorySlot[this.slotCount];
 		for (int i = 0; i < this.slots.Length; i++)
 		{
@@ -83,26 +78,24 @@ public class Inventory : MonoBehaviour
 	public void NextItem()
 	{
 		this.activeSlot++;
-		Clamp ();
 		UpdateSelected ();
 	}
 
 	public void PreviousItem()
 	{
 		this.activeSlot--;
-		Clamp ();
 		UpdateSelected ();
 	}
 
 	public void SelectItem(int item)
 	{
 		this.activeSlot = item;
-		Clamp ();
 		UpdateSelected ();
 	}
 
 	private void UpdateSelected()
 	{
+		Clamp ();
 		this.invRenderer.UpdateSelected (this.activeSlot);
 	}
 
@@ -115,6 +108,48 @@ public class Inventory : MonoBehaviour
 		if (this.activeSlot < 0)
 		{
 			this.activeSlot = this.slots.Length - 1;
+		}
+	}
+
+	public int[] GetItemCounts()
+	{
+		int[] result = new int[this.slotCount];
+		for(int i = 0; i < this.slots.Length; i++)
+		{
+			result [i] = slots [i].count;
+		}
+		return result;
+	}
+
+	public byte[] GetItems()
+	{
+		byte[] result = new byte[this.slotCount];
+		for(int i = 0; i < this.slots.Length; i++)
+		{
+			result [i] = 0;
+			if (slots [i].inventoryItem != null)
+			{
+				result [i] = slots [i].inventoryItem.type;
+			}
+		}
+		return result;
+	}
+
+	public void Populate(int[] inventoryItemCounts, byte[] inventoryItems)
+	{
+		for (int i = 0; i < inventoryItemCounts.Length; i++)
+		{
+			this.slots [i].Clean ();
+
+			if (inventoryItemCounts [i] > 0)
+			{
+				InventoryItem newItem = new InventoryItem();
+				newItem.type = inventoryItems[i];
+				newItem.sprite = this.blockDatabase.blockMaterials[inventoryItems[i]].inventorySprite;
+				this.slots [i].AddItem (newItem, inventoryItemCounts [i]);
+				this.invRenderer.UpdateCounter(i, this.slots [i].count);
+				this.invRenderer.SetSprite (i, this.slots [i].sprite);
+			}
 		}
 	}
 

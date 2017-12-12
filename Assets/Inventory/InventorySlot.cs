@@ -23,6 +23,16 @@ public class InventorySlot
 		this.count++;
 	}
 
+	public void AddItem(InventoryItem inventoryItem, int itemCount)
+	{
+		if (this.count == 0)
+		{
+			this.sprite = inventoryItem.sprite;
+			this.inventoryItem = inventoryItem;
+		}
+		this.count += itemCount;
+	}
+
 	public InventoryItem GetItem()
 	{
 		InventoryItem result = null;
@@ -32,11 +42,17 @@ public class InventorySlot
 			this.count--;
 			if (this.count == 0)
 			{
-				this.sprite = null;
-				this.inventoryItem = null;
+				Clean ();
 			}
 		}
 		return result;
+	}
+
+	public void Clean()
+	{
+		this.sprite = null;
+		this.count = 0;
+		this.inventoryItem = null;
 	}
 
 }

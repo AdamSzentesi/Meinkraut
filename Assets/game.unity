@@ -1329,6 +1329,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 195495898}
+  dig: {fileID: 8300000, guid: 898e435a72d8cac46a720d2b297c7835, type: 3}
+  place: {fileID: 8300000, guid: e4502564dae54f04f97e9fe763ee26c0, type: 3}
   rechargeTime: 0.2
   damage: 1
 --- !u!114 &1726003134

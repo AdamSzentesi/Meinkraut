@@ -36,7 +36,7 @@ public class MainMenu : MonoBehaviour
 		}
 
 		BinaryFormatter formatter = new BinaryFormatter ();
-		FileStream file = File.Open (this.savePath + "/ahoj.kraut", FileMode.Open);
+		FileStream file = File.Open (this.savePath + "/save.kraut", FileMode.Open);
 
 		SaveData saveData = (SaveData)formatter.Deserialize(file);
 		file.Close ();

@@ -53,13 +53,15 @@ public class GameMenu : MonoBehaviour
 		}
 
 		BinaryFormatter formatter = new BinaryFormatter ();
-		FileStream file = File.Create (this.savePath + "/ahoj.kraut");
+		FileStream file = File.Create (this.savePath + "/save.kraut");
 
 		SaveData saveData = new SaveData ();
 		saveData.worldSeed = this.world.GetWorldSeed();
 		saveData.playerPositionX = this.world.player.transform.position.x;
 		saveData.playerPositionY = this.world.player.transform.position.y;
 		saveData.playerPositionZ = this.world.player.transform.position.z;
+		saveData.inventoryItemCounts = this.world.player.GetComponent<Inventory> ().GetItemCounts ();
+		saveData.inventoryItems = this.world.player.GetComponent<Inventory> ().GetItems ();
 		saveData.SetChangedBlocks (this.world.changedBlocks);
 
 		//print ("SAVING");

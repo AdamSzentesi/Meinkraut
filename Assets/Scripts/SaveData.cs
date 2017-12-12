@@ -8,9 +8,12 @@ public class SaveData
 	public float playerPositionX;
 	public float playerPositionY;
 	public float playerPositionZ;
+	public int[] inventoryItemCounts;
+	public byte[] inventoryItems;
 	public List<Vector3i> chunkPositions = new List<Vector3i>();
 	public List<List<Vector3i>> blockPositions = new List<List<Vector3i>>();
 	public List<List<byte>> blockTypes = new List<List<byte>>();
+
 
 	//transform from Dictionary to List data: Dictionaries are not serializable
 	public void SetChangedBlocks(Dictionary<Vector3i, Dictionary<Vector3i, byte>> changedBlocks)

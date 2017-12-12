@@ -35,6 +35,7 @@ public class World : MonoBehaviour
 			this.changedBlocks = saveData.GetChangedBlocks();
 			this.playerTransform.position = new Vector3(saveData.playerPositionX, saveData.playerPositionY, saveData.playerPositionZ);
 			this.playerChunkPosition = GetChunkPosition(this.playerTransform.position);
+			this.player.GetComponent<Inventory> ().Populate (saveData.inventoryItemCounts, saveData.inventoryItems);
 		}
 
 		//collider setup

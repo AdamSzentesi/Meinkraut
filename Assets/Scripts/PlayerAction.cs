@@ -7,6 +7,10 @@ public class PlayerAction : MonoBehaviour
 	public Camera camera;
 	private CameraControl cameraControl;
 
+	public AudioClip dig;
+	public AudioClip place;
+	private AudioSource audioSource;
+
 	private Inventory inventory;
 	private World world;
 	private float digInput = 0;
@@ -21,6 +25,7 @@ public class PlayerAction : MonoBehaviour
 	{
 		this.inventory = GetComponent<Inventory> ();
 		this.cameraControl = this.camera.GetComponent<CameraControl> ();
+		this.audioSource = GetComponent<AudioSource> ();
 	}
 
 	void Update()
@@ -51,7 +56,8 @@ public class PlayerAction : MonoBehaviour
 				if (target != null)
 				{
 					byte diggedBlockType = this.world.Dig (target, this.damage);
-					this.GetComponent<AudioSource> ().Play();
+					this.audioSource.clip = this.dig;
+					this.audioSource.Play();
 					if (diggedBlockType > 0)
 					{
 						InventoryItem newItem = new InventoryItem();
@@ -77,6 +83,8 @@ public class PlayerAction : MonoBehaviour
 					InventoryItem inventoryItem = this.inventory.GetItem ();
 					if (inventoryItem != null)
 					{
+						this.audioSource.clip = this.place;
+						this.audioSource.Play();
 						this.world.Place (target, inventoryItem.type);
 					}
 				}
